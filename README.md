@@ -9,7 +9,7 @@ En avskalad webbapp för att hålla koll på vad du dricker under kvällen. Ämn
 
 - **Lägg till** med snabbval (med symboler: öl, vin, bubbel, sprit, alkoholfri öl, cola och läsk – med respektive utan koffein –, kaffe, vatten …) eller fritext, t.ex.
   `en öl, en espresso martini, en cola zero och två glas ramlösa`.
-  Fritexten förstår antal (`två`, `3x`), volym (`50cl`), alkoholhalt (`4%`), `flaska vin` och ihopsatta drinkar (`vodka sprite`).
+  Medan man skriver visas förslag att trycka på. Fritexten förstår antal (`två`, `3x`), volym (`50cl`), alkoholhalt (`4%`), `flaska vin` och ihopsatta drinkar (`vodka sprite`).
 - **Lagrets höjd** = andel av en referensnivå. Den del som går över gränsen blir streckad.
 - **Vatten – varannan vatten:** vatten, läsk, alkoholfri öl och annat alkoholfritt räknas i glas (minst ett per dryck, en stor flaska blir flera; kaffe räknas inte). Status: *Varannan vatten ✅* när antalet glas är lika många som alkoholdryckerna, *Bra! Du dricker tillräckligt med vatten* när de är fler, annars *Drick ett glas till för mer balans*. Öl, vin och drinkar räknas inte. Vid 4 standardglas eller mer säger appen att vattnet inte hjälper fullt ut.
 - **Alkohol** mäts i standardglas. Nivåerna trappas upp lugnt: under 2 *Märks redan/Påverkar omdömet*, upp till 3 *Påverkar sömnen*, mer än 3 *innebär en risk* (riskbruk enligt Socialstyrelsen), från 5 *Risken för skador ökar*, från 7 *Risk för minnesluckor och förgiftning*. Promilletexterna följer IQ:s beskrivning av olika promillehalter. Panelen visar uppskattad promille, vad mängden gör med omdöme, sömn och mående, när alkoholen är ute (vänta med bilkörning), kalorier, *Dricka smartare*-tips och en ruta *Om standardglas*.
@@ -46,7 +46,7 @@ npm test
 ## Struktur
 
 - `js/icons.js` – dryckessymboler (SVG)
-- `js/drinks.js` – dryckesdatabas (~50 drycker och drinkar) och fritexttolkning
+- `js/drinks.js` – dryckesdatabas (~85 drycker, drinkar och alkoholfria alternativ) och fritexttolkning
 - `js/substances.js` – gränsvärden, texter om effekter, prognos för imorgon
 - `js/app.js` – gränssnittet
 - `styles.css` – ljust och mörkt tema

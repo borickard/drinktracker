@@ -23,6 +23,7 @@
   --blob-2: #cfe2f3;
   --blob-3: #f4cfdc;
   --chip: rgba(255,255,255,.72);
+  --steam: rgba(110, 88, 72, .34);
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -50,6 +51,7 @@
     --blob-2: #1d3247;
     --blob-3: #43232f;
     --chip: rgba(255,255,255,.06);
+    --steam: rgba(255, 255, 255, .42);
   }
 }
 
@@ -315,6 +317,11 @@ body.sheet-open { overflow: hidden; }
 #free-add { padding: 0 16px; border-radius: 12px; background: var(--ink); color: var(--bg); font-weight: 600; }
 #free-add:disabled { opacity: .25; cursor: default; }
 
+.suggest { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; }
+.suggest:empty { display: none; }
+.suggest .chip { padding: 5px 12px 5px 6px; font-size: 13px; }
+.suggest .chip .icon { width: 20px; height: 20px; }
+.suggest .chip small { font-size: 11px; }
 .preview { list-style: none; padding: 0; margin: 10px 0 0; font-size: 14px; }
 .preview li { padding: 4px 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .preview .icon { width: 22px; height: 22px; }
@@ -489,8 +496,8 @@ body:not(.is-empty) .backdrop-blobs span { opacity: .28; }
 .d-sugar { background: var(--sugar); height: 26px; animation-name: fill-sugar; }
 @keyframes fill-water    { 0%, 4% { height: 0; } 16%, 88% { height: 62px; } 100% { height: 0; } }
 @keyframes fill-alcohol  { 0%, 18% { height: 0; } 30%, 88% { height: 54px; } 100% { height: 0; } }
-@keyframes fill-caffeine { 0%, 32% { height: 0; } 44%, 88% { height: 34px; } 100% { height: 0; } }
-@keyframes fill-sugar    { 0%, 46% { height: 0; } 58%, 88% { height: 26px; } 100% { height: 0; } }
+@keyframes fill-sugar    { 0%, 32% { height: 0; } 44%, 88% { height: 26px; } 100% { height: 0; } }
+@keyframes fill-caffeine { 0%, 46% { height: 0; } 58%, 88% { height: 34px; } 100% { height: 0; } }
 
 .bubble {
   position: absolute;
@@ -524,14 +531,14 @@ body:not(.is-empty) .backdrop-blobs span { opacity: .28; }
 .tag-water i { background: var(--water); }
 .tag-alcohol { right: 0; bottom: 82px; animation-name: tag-alcohol; }
 .tag-alcohol i { background: var(--alcohol); }
-.tag-caffeine { left: 6px; bottom: 128px; animation-name: tag-caffeine; }
+.tag-caffeine { left: 6px; bottom: 166px; animation-name: tag-caffeine; }
 .tag-caffeine i { background: var(--caffeine); }
-.tag-sugar { right: 10px; bottom: 166px; animation-name: tag-sugar; }
+.tag-sugar { right: 10px; bottom: 124px; animation-name: tag-sugar; }
 .tag-sugar i { background: var(--sugar); }
 @keyframes tag-water    { 0%, 10% { opacity: 0; transform: translateY(6px) scale(.9); } 18%, 86% { opacity: 1; transform: none; } 96%, 100% { opacity: 0; } }
 @keyframes tag-alcohol  { 0%, 24% { opacity: 0; transform: translateY(6px) scale(.9); } 32%, 86% { opacity: 1; transform: none; } 96%, 100% { opacity: 0; } }
-@keyframes tag-caffeine { 0%, 38% { opacity: 0; transform: translateY(6px) scale(.9); } 46%, 86% { opacity: 1; transform: none; } 96%, 100% { opacity: 0; } }
-@keyframes tag-sugar    { 0%, 52% { opacity: 0; transform: translateY(6px) scale(.9); } 60%, 86% { opacity: 1; transform: none; } 96%, 100% { opacity: 0; } }
+@keyframes tag-sugar    { 0%, 38% { opacity: 0; transform: translateY(6px) scale(.9); } 46%, 86% { opacity: 1; transform: none; } 96%, 100% { opacity: 0; } }
+@keyframes tag-caffeine { 0%, 52% { opacity: 0; transform: translateY(6px) scale(.9); } 60%, 86% { opacity: 1; transform: none; } 96%, 100% { opacity: 0; } }
 
 .hero-title {
   margin: 22px 0 0;
@@ -652,7 +659,8 @@ body:not(.is-empty) .backdrop-blobs span { opacity: .28; }
 .fx-over { position: absolute; left: 0; right: 0; bottom: 40%; height: 0; pointer-events: none; z-index: 2; }
 .fx i, .fx-over i { position: absolute; display: block; }
 .demo-layer { position: relative; }
-.layer.partial .fx { opacity: .55; }
+/* Vatten med underskott: dropparna bara där det finns vatten, inte i konturen ovanför */
+.layer.partial .fx { top: auto; height: var(--fill); border-top-left-radius: 0; border-top-right-radius: 0; }
 
 /* Alkohol: bubblor och skum */
 .fx-bubble {
@@ -725,10 +733,10 @@ body:not(.is-empty) .backdrop-blobs span { opacity: .28; }
 /* Koffein: ånga och crema */
 .fx-steam {
   left: var(--x); bottom: 0;
-  width: 16px; height: 34px;
+  width: 22px; height: 44px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(255,255,255,.55), rgba(255,255,255,0) 70%);
-  filter: blur(3px);
+  background: radial-gradient(ellipse at center, var(--steam), transparent 70%);
+  filter: blur(4px);
   opacity: 0;
   animation: fx-steam var(--dur) ease-out infinite;
   animation-delay: var(--t);
@@ -737,8 +745,8 @@ body:not(.is-empty) .backdrop-blobs span { opacity: .28; }
   0% { transform: translate(0, 10px) scale(.5, .6); opacity: 0; }
   25% { opacity: .85; }
   50% { transform: translate(6px, -22px) scale(.9, 1) rotate(8deg); }
-  75% { transform: translate(-4px, -44px) scale(1.2, 1.15) rotate(-6deg); opacity: .45; }
-  100% { transform: translate(4px, -64px) scale(1.5, 1.3); opacity: 0; }
+  75% { transform: translate(-5px, -62px) scale(1.25, 1.2) rotate(-6deg); opacity: .5; }
+  100% { transform: translate(5px, -92px) scale(1.6, 1.4); opacity: 0; }
 }
 .fx-crema {
   left: 0; right: 0; top: 0; height: 6px;

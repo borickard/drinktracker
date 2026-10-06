@@ -63,6 +63,10 @@
     folkol: 'ol', 'pepsi-max': 'cola-zero', tonic: 'vatten', 'ginger-beer': 'cider',
     'energi-zero': 'energi', matcha: 'te', orte: 'te', 'varm-choklad': 'kaffe', kombucha: 'te', 'irish-coffee': 'kaffe',
     likor: 'sprit', jager: 'sprit', portvin: 'vin',
+    lattol: 'ol', ipa: 'ol', halvliter: 'stor-stark', 'hard-seltzer': 'lask-zero', rtd: 'lask', sake: 'sprit', fireball: 'sprit',
+    sangria: 'vin', glogg: 'vin', 'alkoholfri-glogg': 'vin', 'alkoholfritt-vin': 'vin', kir: 'bubbel', mimosa: 'bubbel', hugo: 'bubbel',
+    'alkoholfritt-bubbel': 'bubbel', 'alkoholfri-cider': 'cider', mocktail: 'drink', 'espresso-tonic': 'espresso', iste: 'juice',
+    mjolk: 'vatten', sportdryck: 'vatten', festis: 'juice',
   };
   function iconFor(entry) {
     const ids = entry.matched || [];

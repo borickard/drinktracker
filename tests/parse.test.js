@@ -26,7 +26,7 @@ test('volym, procent och flaska', () => {
 });
 
 test('ihopsatt drink summerar ingredienser', () => {
-  const [d] = Drinks.parse('vodka sprite');
+  const [d] = Drinks.parse('gin sprite');
   assert.ok(d.alcoholG > 12 && d.sugarG > 20);
 });
 
@@ -134,4 +134,12 @@ test('starttid sprider ut dryckerna och sänker promillen', () => {
   assert.strictEqual(S.totals(eff).alcoholG, S.totals(e).alcoholG);
   // Starttid efter första drycken ignoreras
   assert.strictEqual(S.effectiveEntries(e, now + 1000), e);
+});
+
+test('drinkar med egna poster och lättöl', () => {
+  assert.deepStrictEqual(names('whisky sour'), [['Whisky Sour', 1]]);
+  assert.deepStrictEqual(names('daiquiri'), [['Daiquiri', 1]]);
+  assert.deepStrictEqual(names('americano'), [['Kaffe', 1]]);
+  // Lättöl (2,2 %) är inte alkoholfri
+  assert.ok(Drinks.parse('lättöl')[0].alcoholG > 4);
 });

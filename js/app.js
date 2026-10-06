@@ -124,7 +124,7 @@
       const sub = x.s.sub ? x.s.sub(t) : '';
       el.querySelector('.label').innerHTML = `<span class="name">${x.s.name}${sub ? ` · ${sub}` : ''}</span><span class="amount">${x.s.amount(t)}</span>${hint}`;
       el.setAttribute('aria-label', `${x.s.name} ${x.s.amount(t)}. Visa mer`);
-      // Håll ordningen vätska → alkohol → koffein → socker (nerifrån och upp).
+      // Håll ordningen vatten → alkohol → socker → koffein (nerifrån och upp).
       const next = glass.querySelectorAll('.layer')[i];
       if (next !== el) glass.insertBefore(el, next || null);
       if (fresh) { void el.offsetHeight; }
@@ -262,6 +262,51 @@
       ul.appendChild(li);
     }
     $('free-add').disabled = !parsed.some((p) => !p.unknown);
+    // Håller man på att skriva en okänd dryck och det finns förslag – hänvisa till dem.
+    if (updateSuggest() > 0 && parsed.length && parsed[parsed.length - 1].unknown) {
+      ul.lastElementChild.textContent = `”${parsed[parsed.length - 1].raw}” – välj bland förslagen ovan.`;
+    }
+  }
+
+  // Förslag på drycker som matchar det man håller på att skriva (sista delen efter komma/"och").
+  const norm = (x) => x.toLowerCase().normalize('NFC').trim();
+  function updateSuggest() {
+    const box = $('suggest');
+    box.innerHTML = '';
+    const value = $('free').value;
+    const parts = value.split(/,|\+| och /i);
+    const lastRaw = parts[parts.length - 1];
+    const qty = (lastRaw.match(/^\s*(\d+\s*x?|en|ett|två|tre|fyra|fem|sex)\s+/i) || [''])[0];
+    const q = norm(lastRaw.slice(qty.length));
+    if (q.length < 2) return 0;
+    const hits = [];
+    for (const d of window.Drinks.DRINKS) {
+      const names = [d.name, ...d.aliases].map(norm);
+      let score = -1;
+      names.forEach((n, i) => {
+        const sc = n === q ? 100 : n.startsWith(q) ? 60 - i : n.split(' ').some((w) => w.startsWith(q)) ? 40 - i : n.includes(q) ? 20 - i : -1;
+        score = Math.max(score, sc);
+      });
+      if (score >= 0) hits.push({ d, score });
+    }
+    hits.sort((a, b) => b.score - a.score || a.d.name.length - b.d.name.length);
+    const top = hits.slice(0, 6);
+    // Visa inte förslag om det enda träffen redan är exakt det man skrivit.
+    if (top.length === 1 && norm(top[0].d.name) === q) return 0;
+    for (const { d } of top) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.innerHTML = `${window.Icons.iconFor({ matched: [d.id], alcoholG: d.alc || (d.abv ? 1 : 0), caffeineMg: d.caf || 0 })}<span>${d.name}</span><small>${d.size}</small>`;
+      b.addEventListener('click', () => {
+        const prefix = value.slice(0, value.length - lastRaw.length);
+        $('free').value = `${prefix}${prefix && !/\s$/.test(prefix) ? ' ' : ''}${qty}${d.name.toLowerCase()}`;
+        updatePreview();
+        $('free').focus();
+      });
+      box.appendChild(b);
+    }
+    return top.length;
   }
 
   $('free').addEventListener('input', updatePreview);

@@ -146,6 +146,7 @@
   }
 
   // Varje ämne: load = andel av referensnivån (1 = gränsen nås).
+  // Ordningen är lagrens ordning nerifrån och upp – koffeinet överst så att ångan syns.
   const SUBSTANCES = [
     {
       id: 'water', name: 'Vatten',
@@ -242,6 +243,36 @@
       },
     },
     {
+      id: 'sugar', name: 'Socker',
+      amount: (t) => fmt(t.sugarG) + ' g',
+      load: (t) => t.sugarG / 50,
+      level(t) {
+        if (t.sugarG < 1) return 'none';
+        if (t.sugarG < 25) return 'ok';
+        if (t.sugarG < 50) return 'notice';
+        return 'over';
+      },
+      describe(t, entries) {
+        const p = [];
+        let headline;
+        const g = fmt(t.sugarG);
+        const cubes = fmt(t.sugarG / 3);
+        if (t.sugarG < 25) {
+          headline = 'Lite socker';
+          p.push(`${g} g, ungefär ${cubes} sockerbitar. Ger en snabb energiknuff.`);
+        } else if (t.sugarG < 50) {
+          headline = 'Blodsockret svänger';
+          p.push(`${g} g, ungefär ${cubes} sockerbitar. Blodsockret går upp och sedan ner igen – det kan ge sug och en trötthetsdipp senare i kväll.`);
+        } else {
+          headline = 'Mer än ett dagsintag';
+          p.push(`${g} g, ungefär ${cubes} sockerbitar – mer än WHO:s riktvärde för en hel dag (50 g).`);
+          p.push('Stora blodsockersvängningar kan ge oroligare sömn och sötsug imorgon.');
+        }
+        if (t.alcoholG > 0 && t.sugarG >= 25) p.push('Sött döljer alkoholsmaken, så söta drinkar går ofta ned snabbare än man tänkt.');
+        return { headline, paragraphs: p, from: contributors(entries, 'sugarG', 'g') };
+      },
+    },
+    {
       id: 'caffeine', name: 'Koffein',
       amount: (t) => fmt(t.caffeineMg) + ' mg',
       sub: (t) => (t.caffeineSleepOkAt > Date.now() ? `sömnvänligt ${clock(t.caffeineSleepOkAt)}` : ''),
@@ -278,36 +309,6 @@
         }
         p.push('Halveringstiden är ungefär 5 timmar men varierar mellan personer, ofta 3–7 timmar.');
         return { headline, paragraphs: p, from: contributors(entries, 'caffeineMg', 'mg') };
-      },
-    },
-    {
-      id: 'sugar', name: 'Socker',
-      amount: (t) => fmt(t.sugarG) + ' g',
-      load: (t) => t.sugarG / 50,
-      level(t) {
-        if (t.sugarG < 1) return 'none';
-        if (t.sugarG < 25) return 'ok';
-        if (t.sugarG < 50) return 'notice';
-        return 'over';
-      },
-      describe(t, entries) {
-        const p = [];
-        let headline;
-        const g = fmt(t.sugarG);
-        const cubes = fmt(t.sugarG / 3);
-        if (t.sugarG < 25) {
-          headline = 'Lite socker';
-          p.push(`${g} g, ungefär ${cubes} sockerbitar. Ger en snabb energiknuff.`);
-        } else if (t.sugarG < 50) {
-          headline = 'Blodsockret svänger';
-          p.push(`${g} g, ungefär ${cubes} sockerbitar. Blodsockret går upp och sedan ner igen – det kan ge sug och en trötthetsdipp senare i kväll.`);
-        } else {
-          headline = 'Mer än ett dagsintag';
-          p.push(`${g} g, ungefär ${cubes} sockerbitar – mer än WHO:s riktvärde för en hel dag (50 g).`);
-          p.push('Stora blodsockersvängningar kan ge oroligare sömn och sötsug imorgon.');
-        }
-        if (t.alcoholG > 0 && t.sugarG >= 25) p.push('Sött döljer alkoholsmaken, så söta drinkar går ofta ned snabbare än man tänkt.');
-        return { headline, paragraphs: p, from: contributors(entries, 'sugarG', 'g') };
       },
     },
   ];
