@@ -29,9 +29,19 @@
     <section class="log" aria-label="Drycker">
       <ol id="log"></ol>
     </section>
+
+    <footer class="disclaimer">
+      Ett standardglas = 12 g ren alkohol, t.ex. 33 cl starköl, ett litet glas vin eller 4 cl sprit.
+      Socialstyrelsen räknar 4 standardglas eller mer vid ett tillfälle, eller 10 per vecka, som riskbruk – samma gräns för alla.
+      Värdena i appen är uppskattningar.
+      <a href="https://lakartidningen.se/nyheter/socialstyrelsen-skarper-alkoholrad-for-man-max-fyra-ol-pa-en-kvall/" target="_blank" rel="noopener">Källa</a>
+    </footer>
   </main>
 
   <button class="add" id="add" aria-label="Lägg till dryck">+</button>
+  <button class="profile" id="profile" aria-label="Din profil">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+  </button>
 
   <!-- Lägg till -->
   <div class="sheet" id="add-sheet" hidden>
@@ -65,12 +75,44 @@
         <ul id="info-tips-list"></ul>
       </div>
       <ul class="from" id="info-from"></ul>
+      <div class="guidance" id="info-guidance" hidden>
+        <h3>Om standardglas</h3>
+        <p>Ett standardglas innehåller 12 g ren alkohol, till exempel 33 cl starköl, 50 cl folköl, ett litet glas vin eller 4 cl sprit. Ett vanligt glas vin på restaurang (15 cl) är ofta mer än ett standardglas.</p>
+        <p>Enligt Socialstyrelsen räknas 4 standardglas eller mer vid ett tillfälle (en gång i månaden eller oftare), eller 10 eller mer per vecka, som riskbruk. Då ökar risken för negativa konsekvenser för hälsan. Gränserna är desamma för kvinnor och män. Undvik alkohol helt före 18 års ålder, vid graviditet och inför en operation.</p>
+      </div>
+
       <p class="fine">Ungefärliga värden. Kroppar är olika.<span id="info-more"> Mer om alkohol och hälsa på <a href="https://www.iq.se" target="_blank" rel="noopener">iq.se</a>.</span></p>
+    </div>
+  </div>
+
+  <!-- Profil -->
+  <div class="sheet" id="profile-sheet" hidden>
+    <div class="sheet-backdrop" data-close></div>
+    <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title">
+      <div class="grip" data-close></div>
+      <h2 id="profile-title">Din profil</h2>
+      <p class="lead">Med vikt, längd och kön kan appen uppskatta din promille och hur länge alkoholen finns kvar i kroppen.</p>
+      <form id="profile-form" autocomplete="off">
+        <fieldset class="segmented">
+          <legend>Kön</legend>
+          <label><input type="radio" name="sex" value="kvinna"><span>Kvinna</span></label>
+          <label><input type="radio" name="sex" value="man"><span>Man</span></label>
+          <label><input type="radio" name="sex" value=""><span>Vill inte ange</span></label>
+        </fieldset>
+        <div class="fields">
+          <label>Vikt<span class="unit-input"><input name="weight" type="number" inputmode="decimal" min="30" max="250" placeholder="75"><span>kg</span></span></label>
+          <label>Längd<span class="unit-input"><input name="height" type="number" inputmode="numeric" min="120" max="230" placeholder="175"><span>cm</span></span></label>
+        </div>
+        <button type="submit" class="primary">Spara</button>
+        <button type="button" class="link" id="profile-clear" hidden>Rensa profilen</button>
+      </form>
+      <p class="fine">Sparas bara på din enhet. Socialstyrelsens gränser – 4 standardglas per tillfälle och 10 per vecka – gäller alla oavsett kön och storlek. Profilen påverkar promille och nedbrytningstid, inte gränserna.</p>
     </div>
   </div>
 
   <div class="toast" id="toast" hidden><span id="toast-text"></span><button class="link" id="undo">Ångra</button></div>
 
+  <script src="js/icons.js"></script>
   <script src="js/drinks.js"></script>
   <script src="js/substances.js"></script>
   <script src="js/app.js"></script>

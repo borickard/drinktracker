@@ -42,12 +42,25 @@ test('nivåer', () => {
   assert.strictEqual(lvl.caffeine, 'over');
 });
 
-test('en öl räknas inte som vätska', () => {
+test('en öl räknas inte som vätska – varva med vatten', () => {
   const now = Date.now();
   const water = S.SUBSTANCES.find((s) => s.id === 'water');
-  const beer = S.totals(Drinks.parse('en öl').map((x) => ({ ...x, t: now })));
-  assert.ok(beer.netFluidMl < 0);
-  assert.notStrictEqual(water.describe(beer, []).headline, 'Bra vätskebalans');
-  const withWater = S.totals(Drinks.parse('en öl och ett glas vatten').map((x) => ({ ...x, t: now })));
-  assert.strictEqual(water.level(withWater), 'good');
+  const tot = (q, profile) => S.totals(Drinks.parse(q).map((x) => ({ ...x, t: now })), profile);
+  assert.strictEqual(water.level(tot('en öl')), 'notice');
+  assert.strictEqual(water.level(tot('en öl och ett glas vatten')), 'good');
+  assert.strictEqual(water.level(tot('2 vin och en cola zero')), 'notice');
+  // Mycket alkohol: vattnet är bra, men prognosen blir ändå sämre.
+  const heavy = tot('6 öl och 6 glas vatten');
+  assert.strictEqual(water.level(heavy), 'good');
+  assert.match(S.tomorrow(heavy), /inte fullt ut/);
+});
+
+test('profilen påverkar promille men inte gränsen', () => {
+  const now = Date.now();
+  const e = Drinks.parse('3 öl').map((x) => ({ ...x, t: now }));
+  const small = S.totals(e, { weight: 55, height: 160, sex: 'kvinna' });
+  const big = S.totals(e, { weight: 95, height: 190, sex: 'man' });
+  assert.ok(small.bac > big.bac * 1.5);
+  const alcohol = S.SUBSTANCES.find((s) => s.id === 'alcohol');
+  assert.strictEqual(alcohol.level(small), alcohol.level(big));
 });
