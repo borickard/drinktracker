@@ -63,7 +63,12 @@
         <button class="link" id="reset" hidden>Ny kväll</button>
       </header>
 
-      <p class="summary" id="summary"></p>
+      <p class="summary" id="summary">
+        <span id="summary-count"></span>
+        <button type="button" class="inline-btn" id="start-btn" aria-label="Ändra när du började dricka" hidden><span id="start-time"></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.8 2.6l2.6 2.6-7.7 7.7-3.1.5.5-3.1z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></button>
+        <span class="bac-chip" id="bac-chip" hidden><span aria-hidden="true">·</span> <span id="bac-value"></span>
+          <button type="button" class="info-btn" id="bac-info" aria-label="Om uppskattad promille">i</button></span>
+      </p>
 
       <section class="stage" aria-label="Det du fått i dig">
         <div class="glass" id="glass" role="list"></div>
@@ -121,6 +126,7 @@
         <h3>Dricka smartare</h3>
         <ul id="info-tips-list"></ul>
       </div>
+      <button type="button" class="link info-link" id="info-bac" hidden><span class="info-btn" aria-hidden="true">i</span>Så uppskattas promillen – och varför den kan skilja sig</button>
       <ul class="from" id="info-from"></ul>
       <div class="guidance" id="info-guidance" hidden>
         <h3>Om standardglas</h3>
@@ -129,6 +135,46 @@
       </div>
 
       <p class="fine">Ungefärliga värden. Kroppar är olika.<span id="info-more"> Läs mer på iq.se: <a href="https://www.iq.se/fakta-om-alkohol/alkoholen-och-kroppen/sa-paverkas-kroppen-vid-olika-promillehalter/" target="_blank" rel="noopener">promille</a>, <a href="https://www.iq.se/fakta-om-alkohol/alkoholen-och-kroppen/hur-lang-tid-tar-det-for-alkoholen-att-ga-ur-kroppen/" target="_blank" rel="noopener">förbränning</a>, <a href="https://www.iq.se/fakta-om-alkohol/alkoholen-och-kroppen/alkohol-och-bakfylla/" target="_blank" rel="noopener">bakfylla</a>.</span></p>
+    </div>
+  </div>
+
+  <!-- Starttid -->
+  <div class="sheet" id="start-sheet" hidden>
+    <div class="sheet-backdrop" data-close></div>
+    <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="start-title">
+      <div class="sheet-bar"><span class="grip" aria-hidden="true"></span><button type="button" class="sheet-close" data-close aria-label="Stäng">×</button></div>
+      <h2 id="start-title">När började du dricka?</h2>
+      <p class="lead">Lägger du in drycker i efterhand räknar vi som att de druckits jämnt utspridda sedan dess. Då blir den uppskattade promillen och koffeinet mer rättvisande.</p>
+      <form id="start-form">
+        <label class="time-field"><span>Började kl</span><input id="start-input" type="time" required></label>
+        <button type="submit" class="primary">Spara</button>
+        <button type="button" class="link" id="start-reset" hidden>Använd tiden för första drycken</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Om promille -->
+  <div class="sheet" id="bac-sheet" hidden>
+    <div class="sheet-backdrop" data-close></div>
+    <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="bac-title">
+      <div class="sheet-bar"><span class="grip" aria-hidden="true"></span><button type="button" class="sheet-close" data-close aria-label="Stäng">×</button></div>
+      <h2 id="bac-title">Om uppskattad promille</h2>
+      <p>Promillen i appen är en ungefärlig uppskattning. Den bygger på hur mycket alkohol du har lagt till, när du började dricka och – om du angett det – din vikt, längd och kön. Vi räknar med att kroppen bryter ned ungefär 0,15 promille i timmen.</p>
+      <p>Din verkliga promille kan skilja sig mycket. Det som påverkar är bland annat:</p>
+      <ul class="factors">
+        <li><strong>Kroppsvikt och kroppssammansättning</strong> – alkoholen späds ut i kroppens vatten.</li>
+        <li><strong>Kön</strong> – kvinnor får ofta högre promille av samma mängd och bryter ned alkohol långsammare.</li>
+        <li><strong>Mat</strong> – med mat i magen tas alkoholen upp långsammare och promillen stiger mindre.</li>
+        <li><strong>Hur snabbt du dricker</strong> – och om drycken är kolsyrad, då tas alkoholen upp snabbare.</li>
+        <li><strong>Ålder, hälsa och läkemedel</strong> – från 60 år går nedbrytningen långsammare.</li>
+        <li><strong>Trötthet och dagsform</strong> påverkar hur berusad du känner dig.</li>
+      </ul>
+      <p>Hur berusad man känner sig följer inte alltid promillen, och man underskattar ofta hur påverkad man är. Använd aldrig appen för att avgöra om du kan köra bil.</p>
+      <div class="sheet-actions">
+        <button type="button" class="chip" id="bac-start">Ändra starttid</button>
+        <button type="button" class="chip" id="bac-profile">Ange vikt, längd och kön</button>
+      </div>
+      <p class="fine">Läs mer om <a href="https://www.iq.se/fakta-om-alkohol/alkoholen-och-kroppen/sa-paverkas-kroppen-vid-olika-promillehalter/" target="_blank" rel="noopener">hur kroppen påverkas vid olika promillehalter</a> och <a href="https://www.iq.se/fakta-om-alkohol/alkoholen-och-kroppen/hur-lang-tid-tar-det-for-alkoholen-att-ga-ur-kroppen/" target="_blank" rel="noopener">hur lång tid det tar för alkoholen att gå ur kroppen</a> på iq.se.</p>
     </div>
   </div>
 

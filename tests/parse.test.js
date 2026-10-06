@@ -121,3 +121,17 @@ test('profilen påverkar promille men inte gränsen', () => {
   const alcohol = S.SUBSTANCES.find((s) => s.id === 'alcohol');
   assert.strictEqual(alcohol.level(small), alcohol.level(big));
 });
+
+test('starttid sprider ut dryckerna och sänker promillen', () => {
+  const now = Date.now();
+  const e = Drinks.parse('4 öl').map((x) => ({ ...x, t: now }));
+  const loggedNow = S.totals(e).bac;
+  const eff = S.effectiveEntries(e, now - 4 * 3600e3);
+  const spread = S.totals(eff).bac;
+  assert.ok(spread < loggedNow - 0.3, `${spread} < ${loggedNow}`);
+  assert.ok(spread > 0);
+  // Mängden ändras inte
+  assert.strictEqual(S.totals(eff).alcoholG, S.totals(e).alcoholG);
+  // Starttid efter första drycken ignoreras
+  assert.strictEqual(S.effectiveEntries(e, now + 1000), e);
+});

@@ -76,7 +76,37 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .top { display: flex; align-items: baseline; justify-content: space-between; }
 h1 { font-size: 28px; font-weight: 650; letter-spacing: -0.02em; margin: 0; }
 .link { color: var(--muted); font-size: 14px; }
-.summary { color: var(--muted); font-size: 14px; margin: 4px 0 0; min-height: 20px; }
+.summary { color: var(--muted); font-size: 14px; margin: 4px 0 0; min-height: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.inline-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--chip);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 14px; font-weight: 600;
+}
+.inline-btn svg { width: 12px; height: 12px; color: var(--muted); }
+.bac-chip { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 600; }
+.bac-chip > span:first-child { color: var(--muted); font-weight: 400; }
+.info-btn {
+  display: inline-grid; place-items: center;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 1.4px solid currentColor;
+  color: var(--muted);
+  font: italic 700 11px/1 Georgia, "Times New Roman", serif;
+  flex: none;
+}
+.info-link { display: inline-flex; align-items: center; gap: 8px; margin: 4px 0 6px; color: var(--ink); text-align: left; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
+.factors { margin: 0 0 12px; padding-left: 18px; font-size: 15px; }
+.factors li + li { margin-top: 6px; }
+#bac-sheet p { margin: 0 0 12px; }
+.sheet-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 8px; }
+.sheet-actions .chip { padding: 9px 14px; }
+.time-field { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; margin-bottom: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--muted); font-size: 14px; }
+.time-field input { font: inherit; font-size: 22px; font-weight: 600; color: var(--ink); border: 0; background: none; text-align: right; }
+.time-field:focus-within { outline: 2px solid var(--ink); outline-offset: -1px; }
 
 /* ---------- Glaset ---------- */
 .stage { margin: 28px 0 8px; }

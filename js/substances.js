@@ -44,16 +44,43 @@
     return { weight: w, height: h, sex: p.sex, r: Math.min(0.85, Math.max(0.45, r)), personal: !!(profile && profile.weight) };
   }
 
+  // Varje enskild dryck (2 × öl blir två) med sin tidpunkt.
+  function units(entries) {
+    const out = [];
+    for (const e of entries) {
+      for (let k = 0; k < e.count; k++) out.push({ e, t: e.t + k * (e.spread || 0) });
+    }
+    return out.sort((a, b) => a.t - b.t);
+  }
+
+  // Om användaren angett när hen började dricka – och det är före första registrerade dryck –
+  // antar vi att dryckerna druckits jämnt utspridda från starttiden till sista registreringen.
+  function effectiveEntries(entries, startAt) {
+    if (!startAt || !entries.length) return entries;
+    const sorted = [...entries].sort((a, b) => a.t - b.t);
+    const first = sorted[0].t;
+    const last = sorted[sorted.length - 1].t;
+    if (startAt >= first) return entries;
+    const total = sorted.reduce((n, e) => n + e.count, 0);
+    const step = (Math.max(last, first) - startAt) / total;
+    let before = 0;
+    const map = new Map();
+    for (const e of sorted) {
+      map.set(e, { ...e, t: startAt + before * step, spread: step });
+      before += e.count;
+    }
+    return entries.map((e) => map.get(e));
+  }
+
   // Promille över tid. Förenklat: alkoholen räknas som upptagen direkt, nedbrytning 0,15 ‰/h.
   function promille(entries, body, at = Date.now()) {
-    const drinks = entries.filter((e) => !isSoft(e)).sort((a, b) => a.t - b.t);
     let bac = 0;
     let last = null;
-    for (const e of drinks) {
-      if (e.t > at) break;
-      if (last != null) bac = Math.max(0, bac - ELIMINATION * ((e.t - last) / HOUR));
-      bac += (e.alcoholG * e.count) / (body.r * body.weight);
-      last = e.t;
+    for (const { e, t } of units(entries.filter((x) => !isSoft(x)))) {
+      if (t > at) break;
+      if (last != null) bac = Math.max(0, bac - ELIMINATION * ((t - last) / HOUR));
+      bac += e.alcoholG / (body.r * body.weight);
+      last = t;
     }
     if (last == null) return 0;
     return Math.max(0, bac - ELIMINATION * ((at - last) / HOUR));
@@ -92,9 +119,9 @@
   }
 
   function caffeineAt(entries, at) {
-    return entries.reduce((sum, e) => {
-      const h = Math.max(0, (at - e.t) / HOUR);
-      return sum + e.caffeineMg * e.count * Math.pow(0.5, h / CAFFEINE_HALF_LIFE_H);
+    return units(entries).reduce((sum, { e, t }) => {
+      const h = Math.max(0, (at - t) / HOUR);
+      return sum + e.caffeineMg * Math.pow(0.5, h / CAFFEINE_HALF_LIFE_H);
     }, 0);
   }
 
@@ -348,7 +375,7 @@
     return s;
   }
 
-  const api = { SUBSTANCES, totals, tomorrow, fact, promille, bodyModel, caffeineAt, fmt, clock, GLASS_G };
+  const api = { SUBSTANCES, totals, tomorrow, fact, promille, bodyModel, caffeineAt, effectiveEntries, fmt, clock, GLASS_G };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.Substances = api;
 })(typeof window !== 'undefined' ? window : globalThis);

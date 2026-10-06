@@ -2,6 +2,7 @@
   const { SUBSTANCES, totals, tomorrow, fact, fmt, clock } = window.Substances;
   const STORE_KEY = 'ikvall.entries.v1';
   const PROFILE_KEY = 'ikvall.profile.v1';
+  const START_KEY = 'ikvall.start.v1';
   const GLASS_MAX_UNIT_PX = 110; // höjd för ett ämne som precis når sin gräns
   const MIN_LAYER_PX = 44;
   const MIN_LAYER_HINT_PX = 62; // plats för tre rader etikett
@@ -10,6 +11,7 @@
   const $ = (id) => document.getElementById(id);
   let entries = load();
   let profile = loadProfile();
+  let startAt = loadStart();
   let lastAdded = null;
   let toastTimer = null;
 
@@ -19,6 +21,20 @@
   function loadProfile() {
     try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || null; } catch { return null; }
   }
+  function loadStart() {
+    try { return parseInt(localStorage.getItem(START_KEY), 10) || null; } catch { return null; }
+  }
+  function saveStart() {
+    try {
+      if (startAt) localStorage.setItem(START_KEY, String(startAt));
+      else localStorage.removeItem(START_KEY);
+    } catch { /* privat läge */ }
+  }
+  // Dryckerna med de tidpunkter som används för promille och koffein (se starttid).
+  const effective = () => window.Substances.effectiveEntries(entries, startAt);
+  const firstAt = () => (entries.length ? Math.min(...entries.map((e) => e.t)) : null);
+  const startedAt = () => (startAt && startAt < firstAt() ? startAt : firstAt());
+
   function saveProfile() {
     try {
       if (profile) localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
@@ -61,7 +77,8 @@
 
   // ---------- Rendering ----------
   function render() {
-    const t = totals(entries, profile);
+    const eff = effective();
+    const t = totals(eff, profile);
     const active = SUBSTANCES
       .map((s) => ({ s, load: s.load(t), level: s.level(t) }))
       .filter((x) => x.level !== 'none' && x.load > 0.005);
@@ -102,7 +119,7 @@
       }
       // Del över gränsen streckas.
       el.style.setProperty('--limit', x.load > 1 ? (100 / Math.min(x.load, 2.5)).toFixed(1) + '%' : '100%');
-      const d = x.level === 'ok' ? null : x.s.describe(t, entries);
+      const d = x.level === 'ok' ? null : x.s.describe(t, eff);
       const hint = d ? `<span class="hint">${d.short || d.headline}</span>` : '';
       const sub = x.s.sub ? x.s.sub(t) : '';
       el.querySelector('.label').innerHTML = `<span class="name">${x.s.name}${sub ? ` · ${sub}` : ''}</span><span class="amount">${x.s.amount(t)}</span>${hint}`;
@@ -119,11 +136,13 @@
     });
 
     const n = entries.reduce((a, e) => a + e.count, 0);
-    $('summary').textContent = n
-      ? `${n} ${n === 1 ? 'dryck' : 'drycker'} sedan kl ${clock(Math.min(...entries.map((e) => e.t)))}`
-      : '';
+    $('summary-count').textContent = n ? `${n} ${n === 1 ? 'dryck' : 'drycker'} sedan` : '';
+    $('start-btn').hidden = !n;
+    if (n) $('start-time').textContent = `kl ${clock(startedAt())}`;
+    $('bac-chip').hidden = !(t.bac >= 0.05);
+    $('bac-value').textContent = `≈ ${fmt(t.bac, 1)} ‰`;
     $('tomorrow').textContent = tomorrow(t);
-    const f = fact(t, entries);
+    const f = fact(t, eff);
     $('fact').hidden = !f;
     $('fact-text').textContent = f;
     $('reset').hidden = !entries.length;
@@ -259,8 +278,9 @@
   // ---------- Ämnesinfo ----------
   function openInfo(id) {
     const s = SUBSTANCES.find((x) => x.id === id);
-    const t = totals(entries, profile);
-    const d = s.describe(t, entries);
+    const eff = effective();
+    const t = totals(eff, profile);
+    const d = s.describe(t, eff);
     $('info-dot').className = `dot dot-${id}`;
     $('info-title').textContent = s.name;
     $('info-amount').textContent = s.amount(t);
@@ -271,6 +291,7 @@
     $('info-tips-list').innerHTML = (d.tips || []).map((x) => `<li>${escapeHtml(x)}</li>`).join('');
     $('info-more').hidden = id !== 'alcohol';
     $('info-guidance').hidden = !d.guidance;
+    $('info-bac').hidden = !(id === 'alcohol' && t.bac >= 0.05);
     $('info-from').innerHTML = d.from.map((f) => `<li><span>${escapeHtml(f.name)}</span><span>${f.value}</span></li>`).join('');
     openSheet('info-sheet');
   }
@@ -390,9 +411,49 @@
   $('reset').addEventListener('click', () => {
     if (!confirm('Börja en ny kväll? Dagens drycker rensas.')) return;
     entries = [];
+    startAt = null;
     save();
+    saveStart();
     render();
   });
+
+  // ---------- Starttid ----------
+  const pad = (n) => String(n).padStart(2, '0');
+  function openStart() {
+    const d = new Date(startedAt() || Date.now());
+    $('start-input').value = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    $('start-reset').hidden = !startAt;
+    openSheet('start-sheet');
+  }
+  $('start-btn').addEventListener('click', openStart);
+  $('start-form').addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const [h, m] = $('start-input').value.split(':').map(Number);
+    if (Number.isNaN(h)) return;
+    const d = new Date();
+    d.setHours(h, m, 0, 0);
+    // Ett klockslag senare än nu betyder igår kväll (t.ex. 23:00 när klockan är 01:00).
+    if (d.getTime() > Date.now()) d.setDate(d.getDate() - 1);
+    startAt = d.getTime();
+    saveStart();
+    render();
+    closeSheets();
+    toast(`Starttid kl ${clock(startAt)}`);
+  });
+  $('start-reset').addEventListener('click', () => {
+    startAt = null;
+    saveStart();
+    render();
+    closeSheets();
+    toast('Starttiden återställd');
+  });
+
+  // ---------- Om promille ----------
+  const openBacInfo = () => openSheet('bac-sheet');
+  $('bac-info').addEventListener('click', openBacInfo);
+  $('info-bac').addEventListener('click', () => { closeSheets(); setTimeout(openBacInfo, 230); });
+  $('bac-profile').addEventListener('click', () => { closeSheets(); setTimeout(openProfile, 230); });
+  $('bac-start').addEventListener('click', () => { closeSheets(); setTimeout(openStart, 230); });
 
   // Samma effekter i demoglaset på startsidan.
   for (const [cls, id] of [['d-water', 'water'], ['d-alcohol', 'alcohol'], ['d-caffeine', 'caffeine'], ['d-sugar', 'sugar']]) {
