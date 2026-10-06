@@ -29,6 +29,36 @@
     try { localStorage.setItem(STORE_KEY, JSON.stringify(entries)); } catch { /* privat läge */ }
   }
 
+  // ---------- Effekter i lagren ----------
+  // Bubblor i alkoholen, kondens på vattnet, ånga från koffeinet och gnistrande socker.
+  function seeded(seed) {
+    let x = seed;
+    return () => { x = (x * 9301 + 49297) % 233280; return x / 233280; };
+  }
+  function fxFor(id) {
+    const r = seeded(id.length * 97 + id.charCodeAt(0));
+    const pct = (a, b) => (a + r() * (b - a)).toFixed(1) + '%';
+    const sec = (a, b) => (a + r() * (b - a)).toFixed(2) + 's';
+    const px = (a, b) => (a + r() * (b - a)).toFixed(1) + 'px';
+    let inner = '';
+    let over = '';
+    if (id === 'alcohol') {
+      for (let i = 0; i < 10; i++) inner += `<i class="fx-bubble" style="--x:${pct(6, 90)};--s:${px(3, 8)};--dur:${sec(2.6, 4.8)};--t:-${sec(0, 4.8)}"></i>`;
+      inner += '<i class="fx-foam"></i>';
+    } else if (id === 'water') {
+      for (let i = 0; i < 14; i++) inner += `<i class="fx-mist" style="--x:${pct(4, 94)};--y:${pct(8, 88)};--s:${px(1.5, 3.5)}"></i>`;
+      for (let i = 0; i < 6; i++) inner += `<i class="fx-drop" style="--x:${pct(8, 88)};--y:${pct(6, 50)};--s:${px(5, 8)}"></i>`;
+      for (let i = 0; i < 3; i++) inner += `<i class="fx-drop run" style="--x:${pct(12, 84)};--y:${pct(4, 30)};--s:${px(6, 9)};--dur:${sec(5, 8)};--t:-${sec(0, 8)}"></i>`;
+    } else if (id === 'caffeine') {
+      for (let i = 0; i < 4; i++) over += `<i class="fx-steam" style="--x:${pct(14, 70)};--dur:${sec(3.6, 5.2)};--t:-${sec(0, 5)}"></i>`;
+      inner += '<i class="fx-crema"></i>';
+    } else if (id === 'sugar') {
+      for (let i = 0; i < 9; i++) inner += `<i class="fx-spark" style="--x:${pct(6, 90)};--y:${pct(10, 85)};--s:${px(5, 10)};--dur:${sec(1.8, 3.2)};--t:-${sec(0, 3)}"></i>`;
+      for (let i = 0; i < 8; i++) inner += `<i class="fx-grain" style="--x:${pct(5, 95)};--s:${px(2, 3.5)};--dur:${sec(3.5, 6)};--t:-${sec(0, 6)}"></i>`;
+    }
+    return `<span class="fx" aria-hidden="true">${inner}</span>${over ? `<span class="fx-over" aria-hidden="true">${over}</span>` : ''}`;
+  }
+
   // ---------- Rendering ----------
   function render() {
     const t = totals(entries, profile);
@@ -60,6 +90,7 @@
         el.dataset.id = x.s.id;
         el.setAttribute('role', 'listitem');
         el.style.height = '0px';
+        el.innerHTML = `${fxFor(x.s.id)}<span class="label"></span>`;
         el.addEventListener('click', () => openInfo(x.s.id));
       }
       el.className = `layer layer-${x.s.id} level-${x.level}`;
@@ -74,7 +105,7 @@
       const d = x.level === 'ok' ? null : x.s.describe(t, entries);
       const hint = d ? `<span class="hint">${d.short || d.headline}</span>` : '';
       const sub = x.s.sub ? x.s.sub(t) : '';
-      el.innerHTML = `<span class="label"><span class="name">${x.s.name}${sub ? ` · ${sub}` : ''}</span><span class="amount">${x.s.amount(t)}</span>${hint}</span>`;
+      el.querySelector('.label').innerHTML = `<span class="name">${x.s.name}${sub ? ` · ${sub}` : ''}</span><span class="amount">${x.s.amount(t)}</span>${hint}`;
       el.setAttribute('aria-label', `${x.s.name} ${x.s.amount(t)}. Visa mer`);
       // Håll ordningen vätska → alkohol → koffein → socker (nerifrån och upp).
       const next = glass.querySelectorAll('.layer')[i];
@@ -362,6 +393,12 @@
     save();
     render();
   });
+
+  // Samma effekter i demoglaset på startsidan.
+  for (const [cls, id] of [['d-water', 'water'], ['d-alcohol', 'alcohol'], ['d-caffeine', 'caffeine'], ['d-sugar', 'sugar']]) {
+    const layer = document.querySelector(`.demo-layer.${cls}`);
+    if (layer) layer.innerHTML = fxFor(id);
+  }
 
   // Promillen sjunker med tiden – uppdatera varje minut.
   setInterval(render, 60e3);

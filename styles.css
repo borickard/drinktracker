@@ -609,6 +609,140 @@ body:not(.is-empty) .backdrop-blobs span { opacity: .28; }
 .add { transition: transform .15s ease; }
 .add:active { transform: scale(.94); }
 
+/* =========================================================
+   Effekter i lagren
+   ========================================================= */
+.fx {
+  position: absolute; inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  container-type: size;
+}
+.fx-over { position: absolute; left: 0; right: 0; bottom: 40%; height: 0; pointer-events: none; z-index: 2; }
+.fx i, .fx-over i { position: absolute; display: block; }
+.demo-layer { position: relative; }
+.layer.partial .fx { opacity: .55; }
+
+/* Alkohol: bubblor och skum */
+.fx-bubble {
+  left: var(--x); bottom: -10px;
+  width: var(--s); height: var(--s);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.95) 0 18%, rgba(255,255,255,.45) 45%, rgba(255,255,255,.18) 70%);
+  animation: fx-rise var(--dur) cubic-bezier(.4,0,.8,.6) infinite;
+  animation-delay: var(--t);
+}
+@keyframes fx-rise {
+  0% { transform: translate(0, 0); opacity: 0; }
+  12% { opacity: 1; }
+  40% { transform: translate(3px, -40cqh); }
+  70% { transform: translate(-2px, -72cqh); }
+  92% { opacity: .9; }
+  100% { transform: translate(1px, calc(-100cqh - 4px)); opacity: 0; }
+}
+.fx-foam {
+  left: 0; right: 0; top: 0;
+  height: 9px;
+  background:
+    radial-gradient(circle at 30% 0, rgba(255,250,235,.9) 0 4px, transparent 4.6px) 0 0 / 19px 9px repeat-x,
+    radial-gradient(circle at 70% 0, rgba(255,250,235,.8) 0 3px, transparent 3.6px) 0 0 / 13px 9px repeat-x,
+    radial-gradient(circle at 50% 0, rgba(255,250,235,.7) 0 2px, transparent 2.6px) 0 0 / 7px 9px repeat-x,
+    linear-gradient(rgba(255,250,235,.8) 0 2px, rgba(255,250,235,0) 9px);
+  animation: fx-foam 6s ease-in-out infinite alternate;
+}
+@keyframes fx-foam { to { background-position: 6px 0, -5px 0, 3px 0, 0 0; } }
+
+/* Vatten: kondens som rinner på utsidan */
+.fx-mist {
+  left: var(--x); top: var(--y);
+  width: var(--s); height: var(--s);
+  border-radius: 50%;
+  background: rgba(255,255,255,.55);
+}
+.fx-drop {
+  left: var(--x); top: var(--y);
+  width: var(--s); height: calc(var(--s) * 1.3);
+  border-radius: 50% 50% 50% 50% / 58% 58% 42% 42%;
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.95) 0 16%, rgba(255,255,255,.4) 42%, rgba(255,255,255,.14) 72%);
+  box-shadow: 0 1px 1px rgba(30,60,90,.12);
+}
+.fx-drop.run { animation: fx-run var(--dur) cubic-bezier(.65,0,.85,.55) infinite; animation-delay: var(--t); }
+.fx-drop.run::before {
+  content: "";
+  position: absolute;
+  left: 50%; bottom: 60%;
+  width: 2px; margin-left: -1px;
+  height: 70cqh;
+  border-radius: 1px;
+  background: linear-gradient(to top, rgba(255,255,255,.55), rgba(255,255,255,0));
+  transform-origin: bottom;
+  transform: scaleY(0);
+  animation: fx-trail var(--dur) cubic-bezier(.65,0,.85,.55) infinite;
+  animation-delay: var(--t);
+}
+@keyframes fx-run {
+  0%, 50% { transform: translateY(0); opacity: 1; }
+  88% { transform: translateY(70cqh); opacity: 1; }
+  100% { transform: translateY(85cqh); opacity: 0; }
+}
+@keyframes fx-trail {
+  0%, 50% { transform: scaleY(0); opacity: 1; }
+  88% { transform: scaleY(1); opacity: .8; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+
+/* Koffein: ånga och crema */
+.fx-steam {
+  left: var(--x); bottom: 0;
+  width: 16px; height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,.55), rgba(255,255,255,0) 70%);
+  filter: blur(3px);
+  opacity: 0;
+  animation: fx-steam var(--dur) ease-out infinite;
+  animation-delay: var(--t);
+}
+@keyframes fx-steam {
+  0% { transform: translate(0, 10px) scale(.5, .6); opacity: 0; }
+  25% { opacity: .85; }
+  50% { transform: translate(6px, -22px) scale(.9, 1) rotate(8deg); }
+  75% { transform: translate(-4px, -44px) scale(1.2, 1.15) rotate(-6deg); opacity: .45; }
+  100% { transform: translate(4px, -64px) scale(1.5, 1.3); opacity: 0; }
+}
+.fx-crema {
+  left: 0; right: 0; top: 0; height: 6px;
+  background: linear-gradient(rgba(214,170,120,.55), rgba(214,170,120,0));
+}
+
+/* Socker: gnistrande kristaller */
+.fx-spark {
+  left: var(--x); top: var(--y);
+  width: var(--s); height: var(--s);
+  background: rgba(255,255,255,.95);
+  clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+  animation: fx-twinkle var(--dur) ease-in-out infinite;
+  animation-delay: var(--t);
+  opacity: 0;
+}
+@keyframes fx-twinkle {
+  0%, 100% { transform: scale(.2) rotate(0deg); opacity: 0; }
+  50% { transform: scale(1) rotate(45deg); opacity: 1; }
+}
+.fx-grain {
+  left: var(--x); top: -6px;
+  width: var(--s); height: var(--s);
+  border-radius: 1px;
+  background: rgba(255,255,255,.75);
+  animation: fx-fall var(--dur) linear infinite;
+  animation-delay: var(--t);
+}
+@keyframes fx-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  15% { opacity: .9; }
+  100% { transform: translateY(calc(100cqh + 8px)) rotate(240deg); opacity: .2; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .demo-tag { opacity: 1; }
