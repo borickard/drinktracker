@@ -4,7 +4,9 @@
 // Tonen är saklig och lugn – informera, inte skrämma.
 (function (root) {
   const GLASS_G = 12; // ett standardglas = 12 g ren alkohol
-  const OCCASION_LIMIT = 4; // standardglas per tillfälle
+  const RISK_GLASSES = 3; // mer än 3 standardglas på en kväll innebär en risk (Socialstyrelsen: 4 eller fler = riskbruk)
+  // Avrundat till hela glas – 3 starköl (3,3 standardglas) är inte "mer än 3".
+  const overRisk = (t) => Math.round(t.glasses) > RISK_GLASSES;
   const DRIVING_LIMIT = 0.2; // promille, gränsen för rattfylleri
   const ELIMINATION = 0.15; // promille per timme
   const CAFFEINE_HALF_LIFE_H = 5;
@@ -106,12 +108,14 @@
 
   const atClock = (t) => `kl ${clock(t)}${nextDay(t) ? ' imorgon' : ''}`;
 
+  // Effekter vid olika promille, enligt IQ (iq.se/fakta-om-alkohol).
   function promilleText(bac) {
-    if (bac < DRIVING_LIMIT) return 'Under gränsen för rattfylleri (0,2 ‰), men reaktionsförmågan kan redan vara påverkad.';
-    if (bac < 0.5) return 'Över gränsen för rattfylleri. Omdöme och reaktionsförmåga påverkas, och man tar lättare risker.';
-    if (bac < 1.0) return 'Tydligt påverkad: sämre balans, koordination och omdöme.';
-    if (bac < 1.5) return 'Kraftigt påverkad. Risken ökar för olyckor, illamående och minnesluckor.';
-    return 'Mycket hög promille. Risk för minnesluckor och alkoholförgiftning – sluta dricka och se till att inte vara ensam.';
+    if (bac < DRIVING_LIMIT) return 'Effekterna märks knappt än, men reaktionsförmågan kan redan påverkas.';
+    if (bac < 0.5) return 'Runt 0,2 promille börjar de första effekterna märkas: välbefinnande och en känsla av att vara mer social. Det är också gränsen för rattfylleri.';
+    if (bac < 1.0) return 'Från 0,5 promille släpper hämningarna och man blir upprymd, men omdömet försämras och det blir svårare att ta in information.';
+    if (bac < 1.5) return 'Runt 1 promille blir talet sluddrigt, koordinationen sämre och det blir svårare att gå och att kontrollera känslor.';
+    if (bac < 2.0) return 'Runt 1,5 promille kommer illamående och balansproblem, och risken för alkoholrelaterade skador ökar.';
+    return 'Runt 2 promille kommer minnesluckor och förvirring, och det finns risk för medvetslöshet och alkoholförgiftning.';
   }
 
   // Varje ämne: load = andel av referensnivån (1 = gränsen nås).
@@ -145,12 +149,12 @@
           p.push(`${capitalize(glassWord(t.waterGlasses))} vatten eller alkoholfritt mot ${drinks}. Att varva gör att du dricker långsammare och minskar vätskeförlusten – det minskar risken för huvudvärk och muntorrhet imorgon.`);
         } else {
           const missing = t.alcoholDrinks - t.waterGlasses;
-          headline = `Drick ${glassWord(missing)} till för mer balans`;
+          headline = t.glasses >= 5 && missing > 2 ? 'Byt till vatten resten av kvällen' : `Drick ${glassWord(missing)} till för mer balans`;
           p.push(`${capitalize(glassWord(t.waterGlasses))} vatten eller alkoholfritt mot ${drinks}. Ett glas vatten per alkoholdryck – varannan vatten – är en bra tumregel.`);
           p.push(`Att varva gör att du dricker långsammare, och alkoholen driver ut ungefär ${fmt(t.lostMl / 10)} cl vätska ur kroppen. Det märks i måendet imorgon.`);
         }
         if (t.alcoholG > 0 && t.alternating) {
-          p.push(t.glasses >= OCCASION_LIMIT
+          p.push(overRisk(t)
             ? `Men vid ${g} standardglas påverkas sömn, återhämtning och mående imorgon ändå. Vatten gör dig inte nyktrare – det är bara tiden som bryter ned alkoholen.`
             : 'Vatten gör dig däremot inte nyktrare och tar inte bort alkoholens effekt på sömnen.');
         }
@@ -162,36 +166,51 @@
       id: 'alcohol', name: 'Alkohol',
       amount: (t) => `${fmt(t.glasses, 1)} standardglas`,
       sub: (t) => (t.bac >= 0.05 ? `≈ ${fmt(t.bac, 1)} ‰ just nu` : ''),
-      load: (t) => t.glasses / OCCASION_LIMIT,
+      load: (t) => t.glasses / (RISK_GLASSES + 0.5),
       level(t) {
         if (t.glasses < 0.05) return 'none';
         if (t.glasses < 2) return 'ok';
-        if (t.glasses < OCCASION_LIMIT) return 'notice';
+        if (!overRisk(t)) return 'notice';
         return 'over';
       },
       describe(t, entries) {
         const p = [];
         let headline;
+        let short;
         const g = fmt(t.glasses, 1);
-        if (t.glasses < 2) {
+        if (t.glasses < 1.05) {
           headline = 'Märks redan';
-          p.push(`${g} standardglas. Du känner dig avslappnad, men omdöme och reaktionsförmåga påverkas redan innan du själv märker det. Även lite alkohol gör sömnen ytligare.`);
-        } else if (t.glasses < OCCASION_LIMIT) {
+          p.push(`${g} standardglas. Du känner dig avslappnad, men omdöme och reaktionsförmåga påverkas innan du själv märker det. Även lite alkohol gör sömnen ytligare.`);
+        } else if (t.glasses < 2) {
+          headline = 'Påverkar omdömet';
+          p.push(`${g} standardglas. Hämningarna släpper och man tar lättare risker. Sömnen blir ytligare och återhämtningen i natt sämre.`);
+        } else if (!overRisk(t)) {
           headline = 'Påverkar sömnen';
           p.push(`${g} standardglas. Du somnar ofta snabbare, men sömnen blir ytligare under andra halvan av natten och REM-sömnen – den som återställer humör och minne – blir kortare. Vilopulsen ligger högre och återhämtningen blir sämre.`);
-          p.push(`Socialstyrelsens gräns för ett tillfälle är 4 standardglas. Du är på ${g}.`);
+          p.push('Mer än 3 standardglas på en kväll innebär en risk. Ett glas vatten eller något alkoholfritt till nästa runda gör skillnad.');
+        } else if (t.glasses < 5) {
+          headline = 'Mer än 3 standardglas innebär en risk';
+          short = 'Innebär en risk';
+          p.push(`${g} standardglas. Att dricka mer än 3 standardglas på en kväll innebär en risk för hälsan. Gör man det en gång i månaden eller oftare räknas det som riskbruk.`);
+          p.push('Sömnen blir märkbart sämre, och risken ökar för bakfylla imorgon – huvudvärk, illamående, trötthet och ångest.');
+        } else if (t.glasses < 7) {
+          headline = 'Risken för skador ökar';
+          p.push(`${g} standardglas. Omdöme, balans och koordination påverkas tydligt, och risken ökar för olyckor, bråk och skador – och för att göra saker man ångrar.`);
+          p.push('Bakfyllan imorgon blir ofta påtaglig. Byt till vatten eller alkoholfritt resten av kvällen.');
         } else {
-          headline = 'Över Socialstyrelsens gräns';
-          p.push(`${g} standardglas. Att dricka 4 standardglas eller mer vid ett tillfälle räknas som riskbruk om det sker en gång i månaden eller oftare.`);
-          p.push('I den här mängden påverkas omdöme, balans och minne tydligt, och risken ökar för olyckor och skador. Sömnen blir märkbart sämre och imorgon kan du känna dig trött, nedstämd eller orolig.');
+          headline = 'Risk för minnesluckor och förgiftning';
+          short = 'Risk för minnesluckor';
+          p.push(`${g} standardglas. I den här mängden finns risk för minnesluckor, kraftigt illamående och alkoholförgiftning.`);
+          p.push('Sluta dricka alkohol, drick vatten och se till att inte vara ensam. Om någon inte går att väcka eller andas oregelbundet – ring 112.');
         }
         if (t.bac >= 0.05) p.push(`Uppskattad promille just nu: ${fmt(t.bac, 1)} ‰. ${promilleText(t.bac)}`);
         if (t.soberAt > Date.now() + 5 * 60e3) {
-          p.push(`Kroppen bryter ned alkoholen i sin egen takt – inget kan skynda på det. Räkna med alkohol i blodet till ungefär kl ${clock(t.soberAt)}${nextDay(t.soberAt) ? ' imorgon' : ''}. Vänta med att köra bil tills dess.`);
+          p.push(`Kroppen bryter ned alkoholen i sin egen takt – vila, träning och kaffe gör varken till eller från. Räkna med alkohol i blodet till ungefär kl ${clock(t.soberAt)}${nextDay(t.soberAt) ? ' imorgon' : ''}. Vänta med att köra bil tills dess.`);
         }
+        if (overRisk(t)) p.push('Även när alkoholen är ute kan förmågan att köra bil vara nedsatt dagen efter – i studier med upp till 20 procent.');
         p.push(`Kvällens alkohol${t.sugarG >= 1 ? ' och socker' : ''} motsvarar ungefär ${fmt(Math.round(t.kcal / 10) * 10)} kcal.`);
         if (!t.body.personal) p.push('Ange vikt, längd och kön i din profil för en uppskattning som passar dig.');
-        return { headline, paragraphs: p, tips: alcoholTips(t, entries), guidance: true,
+        return { headline, short, paragraphs: p, tips: alcoholTips(t, entries), guidance: true,
           from: contributors(entries, 'alcoholG', 'standardglas', 1 / GLASS_G, 1) };
       },
     },
@@ -271,8 +290,8 @@
     const has = (...ids) => entries.some((e) => e.matched && e.matched.some((m) => ids.includes(m)));
     const tips = [];
     if (!t.alternating) tips.push('Varva: ett glas vatten eller något alkoholfritt per glas alkohol.');
-    if (t.glasses >= 2 && t.glasses < OCCASION_LIMIT) tips.push('Bestäm i förväg var kvällen slutar – Socialstyrelsens gräns är 4 standardglas.');
-    if (t.glasses >= OCCASION_LIMIT) tips.push('Byt till alkoholfritt resten av kvällen – det märks imorgon.');
+    if (t.glasses >= 2 && !overRisk(t)) tips.push('Bestäm i förväg var kvällen slutar – mer än 3 standardglas innebär en risk.');
+    if (overRisk(t)) tips.push('Byt till alkoholfritt resten av kvällen – det märks imorgon.');
     if (t.caffeineMg > 0) tips.push('Koffein gör dig piggare men inte nyktrare – omdöme och reaktion påverkas lika mycket.');
     if (has('ol', 'stor-stark', 'folkol')) tips.push('Alkoholfri öl till nästa runda? Smaken är kvar, men inte effekten på sömnen.');
     if (t.sugarG >= 25) tips.push('Söta drinkar döljer alkoholsmaken och går ned fort.');
@@ -284,12 +303,15 @@
   function fact(t, entries) {
     if (t.alcoholG === 0) return '';
     const facts = [
-      'Socialstyrelsens gränser är desamma för kvinnor och män: 4 standardglas vid ett tillfälle eller 10 per vecka räknas som riskbruk.',
-      'Vatten, kaffe och en kall dusch gör dig inte nykter. Levern bryter ned alkohol i sin egen takt.',
+      'Det finns inget riskfritt drickande. Mer än 3 standardglas på en kväll, eller 10 i veckan, räknas som riskbruk – samma gräns för kvinnor och män.',
+      'Vila, träning och kaffe gör varken till eller från. Levern bryter ned alkohol i sin egen takt – ett glas vin tar ungefär 2 timmar, en stor stark 3–4 timmar.',
+      'Bakfylla beror bland annat på vätskebrist och på att levern arbetar hårt. Bastu och starkt kaffe hjälper inte – vatten och sömn gör det.',
+      'Förmågan att köra bil kan vara nedsatt dagen efter, även när alkoholen är ute ur kroppen.',
+      'Att dricka alkohol dagen efter för att må bättre är förenat med riskbruk.',
       'Alkohol är en av de vanligaste orsakerna till dålig sömn. På en pulsklocka syns det ofta som högre vilopuls hela natten.',
-      'Kvinnor får i regel högre promille än män av samma mängd, eftersom kroppen innehåller mindre vatten.',
+      'Kvinnor får i regel högre promille än män av samma mängd och bryter ned alkohol långsammare.',
       'Alkohol ökar risken för flera cancerformer, även i små mängder. Ju mindre man dricker, desto lägre risk.',
-      'Ångest dagen efter är vanligt. När alkoholen lämnar kroppen blir hjärnan tillfälligt uppvarvad.',
+      'Ångest dagen efter är vanligt. Alkohol påverkar hjärnans signalsubstanser för humör och känslor – och omdömet, så det är lättare att göra något man ångrar.',
       'Socialstyrelsen avråder helt från alkohol före 18 års ålder, vid graviditet och inför en operation.',
       `Kvällens alkohol motsvarar ungefär ${fmt(Math.round((t.alcoholG * KCAL_PER_G_ALCOHOL) / 10) * 10)} kcal – kalorier som inte mättar.`,
     ];
@@ -306,7 +328,8 @@
     }
     let score = 0;
     const why = [];
-    if (t.glasses >= OCCASION_LIMIT) { score -= 2.5; why.push('alkoholen'); }
+    if (t.glasses >= 5) { score -= 3; why.push('alkoholen'); }
+    else if (overRisk(t)) { score -= 2.5; why.push('alkoholen'); }
     else if (t.glasses >= 2) { score -= 1; why.push('alkoholen'); }
     else if (t.glasses > 0) score -= 0.5;
     if (t.caffeineMg >= 200) { score -= 1; why.push('koffeinet'); }
@@ -314,10 +337,11 @@
     // Att varva hjälper, men tar aldrig bort hela effekten av mycket alkohol.
     if (t.alcoholG > 0) score += t.alternating ? 0.5 : -0.5;
     const feel = score >= 0 ? 'pigg' : score >= -1 ? 'ganska pigg' : score >= -2 ? 'lite seg' : 'seg';
-    let s = `Imorgon: ${feel}.`;
+    let s = overRisk(t) ? `Imorgon: ${feel}, med risk för bakfylla.` : `Imorgon: ${feel}.`;
     if (why.length) s += ` Sömnen påverkas av ${why.join(why.length > 2 ? ', ' : ' och ').replace(/, ([^,]*)$/, ' och $1')}.`;
-    if (t.alcoholG > 0 && t.alternating && t.glasses >= OCCASION_LIMIT) s += ' Vattnet hjälper, men inte fullt ut vid den här mängden.';
+    if (t.alcoholG > 0 && t.alternating && overRisk(t)) s += ' Vattnet hjälper, men inte fullt ut vid den här mängden.';
     else if (t.alcoholG > 0 && t.alternating) s += ' Bra att du varvar med vatten.';
+    else if (t.glasses >= 5) s += ' Byt till vatten resten av kvällen.';
     else if (t.alcoholG > 0) {
       s += ` ${capitalize(glassWord(t.alcoholDrinks - t.waterGlasses))} vatten till hjälper.`;
     }

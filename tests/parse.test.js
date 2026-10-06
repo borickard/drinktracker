@@ -81,6 +81,17 @@ test('varannan vatten räknas i glas', () => {
   assert.strictEqual(tot('alkoholfri öl').alcoholG, 0);
 });
 
+test('alkoholnivåer trappas upp efter 3 standardglas', () => {
+  const now = Date.now();
+  const alcohol = S.SUBSTANCES.find((s) => s.id === 'alcohol');
+  const head = (q) => { const e = Drinks.parse(q).map((x) => ({ ...x, t: now })); const t = S.totals(e); return [alcohol.level(t), alcohol.describe(t, e).headline]; };
+  assert.deepStrictEqual(head('2 sprit'), ['notice', 'Påverkar sömnen']);
+  assert.deepStrictEqual(head('3 sprit'), ['notice', 'Påverkar sömnen']);
+  assert.deepStrictEqual(head('4 sprit'), ['over', 'Mer än 3 standardglas innebär en risk']);
+  assert.deepStrictEqual(head('5 sprit'), ['over', 'Risken för skador ökar']);
+  assert.deepStrictEqual(head('7 sprit'), ['over', 'Risk för minnesluckor och förgiftning']);
+});
+
 test('kaffe räknas inte som vatten', () => {
   const now = Date.now();
   const tot = (q) => S.totals(Drinks.parse(q).map((x) => ({ ...x, t: now })));
