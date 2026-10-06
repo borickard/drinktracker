@@ -37,7 +37,8 @@
       .filter((x) => x.level !== 'none' && x.load > 0.005);
 
     const glass = $('glass');
-    $('empty').hidden = active.length > 0;
+    // Startvyn visas tills första drycken är tillagd.
+    document.body.classList.toggle('is-empty', entries.length === 0);
 
     // Lagren behålls mellan renderingar så att höjden kan animeras när man fyller på.
     const keep = new Set(active.map((x) => x.s.id));
@@ -80,6 +81,10 @@
       if (next !== el) glass.insertBefore(el, next || null);
       if (fresh) { void el.offsetHeight; }
       el.style.height = heights[i] + 'px';
+      // Liten studs när mängden ändras.
+      const amount = x.s.amount(t);
+      if (!fresh && el.dataset.amount !== amount) bump(el);
+      el.dataset.amount = amount;
     });
 
     const n = entries.reduce((a, e) => a + e.count, 0);
@@ -115,6 +120,36 @@
 
   const escapeHtml = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+  function bump(el) {
+    el.classList.remove('bump');
+    void el.offsetWidth;
+    el.classList.add('bump');
+  }
+
+  // Dryckessymbolen "faller" ned i glaset.
+  function drop(entry) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const glass = $('glass');
+    const r = glass.getBoundingClientRect();
+    if (!r.width) return;
+    const el = document.createElement('div');
+    el.className = 'drop';
+    el.innerHTML = window.Icons.iconFor(entry);
+    el.style.left = r.left + r.width / 2 - 20 + 'px';
+    el.style.top = r.top + 6 + 'px';
+    document.body.appendChild(el);
+    // Landa på ytan av det översta lagret (lagren växer fortfarande – mät efter höjdövergången).
+    const layers = glass.querySelectorAll('.layer');
+    const heights = [...layers].reduce((sum, l) => sum + parseFloat(l.style.height || 0) + 2, 0);
+    const target = Math.max(20, r.height - heights - 46);
+    el.animate([
+      { transform: 'translateY(-10px) scale(.6) rotate(-12deg)', opacity: 0 },
+      { transform: 'translateY(6px) scale(1.05) rotate(0deg)', opacity: 1, offset: 0.2 },
+      { transform: `translateY(${target}px) scale(.85) rotate(6deg)`, opacity: 1, offset: 0.85 },
+      { transform: `translateY(${target + 14}px) scale(.4)`, opacity: 0 },
+    ], { duration: 800, easing: 'cubic-bezier(.45,0,.7,.3)' }).onfinish = () => el.remove();
+  }
+
   // ---------- Lägg till ----------
   function add(items) {
     const now = Date.now();
@@ -124,6 +159,7 @@
     lastAdded = added;
     save();
     render();
+    setTimeout(() => added.slice(0, 3).forEach((e, i) => setTimeout(() => drop(e), i * 140)), 120);
     toast(added.length === 1 ? `${added[0].name} tillagd` : `${added.length} drycker tillagda`, true);
   }
 
@@ -145,13 +181,14 @@
 
   function buildQuick() {
     const q = $('quick');
-    for (const d of window.Drinks.quick) {
+    window.Drinks.quick.forEach((d, i) => {
       const b = document.createElement('button');
       b.type = 'button';
+      b.style.setProperty('--i', i);
       b.innerHTML = `${window.Icons.ICONS[d.id] || ''}<span class="q-name">${d.name}</span><span class="q-size">${d.size}</span>`;
-      b.addEventListener('click', () => { add([window.Drinks.fromQuick(d.id)]); closeSheets(); });
+      b.addEventListener('click', () => { closeSheets(); add([window.Drinks.fromQuick(d.id)]); });
       q.appendChild(b);
-    }
+    });
   }
 
   function updatePreview() {
@@ -222,10 +259,25 @@
   document.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeSheets));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSheets(); });
 
-  $('add').addEventListener('click', () => {
+  function openAdd() {
     openSheet('add-sheet');
-    setTimeout(() => $('free').focus(), 250);
-  });
+    // Tangentbordet på mobil täcker snabbvalen – fokusera bara på större skärmar.
+    if (window.matchMedia('(min-width: 700px)').matches) setTimeout(() => $('free').focus(), 250);
+  }
+  $('add').addEventListener('click', openAdd);
+  $('cta').addEventListener('click', openAdd);
+  $('welcome-profile').addEventListener('click', () => openProfile());
+
+  // Snabbstart på startsidan: en tryckning lägger till direkt.
+  for (const id of ['ol', 'vin', 'vatten', 'cola-zero', 'kaffe', 'alkoholfri-ol']) {
+    const d = window.Drinks.DRINKS.find((x) => x.id === id);
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip';
+    b.innerHTML = `${window.Icons.ICONS[id] || ''}<span>${d.name}</span>`;
+    b.addEventListener('click', () => add([window.Drinks.fromQuick(id)]));
+    $('starter').appendChild(b);
+  }
   // ---------- Profil ----------
   function openProfile() {
     const f = $('profile-form');

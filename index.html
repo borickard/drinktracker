@@ -6,29 +6,76 @@
   <meta name="theme-color" content="#f5f3ee" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
   <title>Ikväll</title>
+  <meta name="description" content="Håll koll på vad du dricker i kväll – och hur det påverkar sömn, mående och morgondagen.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="backdrop-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
   <main class="app">
-    <header class="top">
-      <h1>Ikväll</h1>
-      <button class="link" id="reset" hidden>Ny kväll</button>
-    </header>
+    <!-- Startvy: visas innan första drycken -->
+    <section class="welcome" id="welcome" aria-labelledby="welcome-title">
+      <p class="brand reveal" style="--d:0">Ikväll</p>
 
-    <p class="summary" id="summary"></p>
-
-    <section class="stage" aria-label="Det du fått i dig">
-      <div class="glass" id="glass" role="list">
-        <p class="empty" id="empty">Vad dricker du ikväll?</p>
+      <div class="hero-art reveal" style="--d:1" aria-hidden="true">
+        <div class="demo-glass">
+          <span class="demo-layer d-water"></span>
+          <span class="demo-layer d-alcohol"></span>
+          <span class="demo-layer d-caffeine"></span>
+          <span class="demo-layer d-sugar"></span>
+          <i class="bubble" style="--x:22%;--s:6px;--t:0s"></i>
+          <i class="bubble" style="--x:58%;--s:4px;--t:1.2s"></i>
+          <i class="bubble" style="--x:76%;--s:5px;--t:2.4s"></i>
+          <i class="bubble" style="--x:40%;--s:3px;--t:3.1s"></i>
+        </div>
+        <span class="demo-tag tag-sugar"><i></i>Socker</span>
+        <span class="demo-tag tag-caffeine"><i></i>Koffein</span>
+        <span class="demo-tag tag-alcohol"><i></i>Alkohol</span>
+        <span class="demo-tag tag-water"><i></i>Vatten</span>
       </div>
+
+      <h1 class="hero-title reveal" style="--d:2" id="welcome-title">Vad dricker du i&nbsp;kväll?</h1>
+      <p class="hero-lead reveal" style="--d:3">Lägg till det du dricker och se direkt hur alkohol, koffein, socker och vatten påverkar sömnen, måendet och morgondagen.</p>
+
+      <button class="cta reveal" style="--d:4" id="cta"><span class="cta-plus" aria-hidden="true">+</span>Lägg till en dryck</button>
+
+      <div class="starter reveal" style="--d:5">
+        <p class="starter-label">Eller börja direkt</p>
+        <div class="starter-row" id="starter"></div>
+      </div>
+
+      <ol class="steps reveal" style="--d:6">
+        <li><span>1</span>Lägg till det du dricker</li>
+        <li><span>2</span>Se lagren fyllas på</li>
+        <li><span>3</span>Tryck på ett lager för att lära dig mer</li>
+      </ol>
+
+      <button class="link welcome-profile reveal" style="--d:7" id="welcome-profile">Ange vikt, längd och kön för en personlig uppskattning →</button>
     </section>
 
-    <p class="tomorrow" id="tomorrow"></p>
-    <p class="fact" id="fact" hidden><span class="fact-label">Visste du?</span> <span id="fact-text"></span></p>
+    <!-- Kvällen -->
+    <div class="tracker" id="tracker">
+      <header class="top">
+        <h1>Ikväll</h1>
+        <button class="link" id="reset" hidden>Ny kväll</button>
+      </header>
 
-    <section class="log" aria-label="Drycker">
-      <ol id="log"></ol>
-    </section>
+      <p class="summary" id="summary"></p>
+
+      <section class="stage" aria-label="Det du fått i dig">
+        <div class="glass" id="glass" role="list"></div>
+      </section>
+
+      <p class="tomorrow" id="tomorrow"></p>
+      <p class="fact" id="fact" hidden><span class="fact-label">Visste du?</span> <span id="fact-text"></span></p>
+
+      <section class="log" aria-label="Drycker">
+        <ol id="log"></ol>
+      </section>
+    </div>
 
     <footer class="disclaimer">
       Ett standardglas = 12 g ren alkohol, t.ex. 33 cl starköl, 12–15 cl vin eller knappt 4 cl sprit.
