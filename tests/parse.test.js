@@ -41,3 +41,13 @@ test('nivåer', () => {
   assert.strictEqual(lvl.alcohol, 'over');
   assert.strictEqual(lvl.caffeine, 'over');
 });
+
+test('en öl räknas inte som vätska', () => {
+  const now = Date.now();
+  const water = S.SUBSTANCES.find((s) => s.id === 'water');
+  const beer = S.totals(Drinks.parse('en öl').map((x) => ({ ...x, t: now })));
+  assert.ok(beer.netFluidMl < 0);
+  assert.notStrictEqual(water.describe(beer, []).headline, 'Bra vätskebalans');
+  const withWater = S.totals(Drinks.parse('en öl och ett glas vatten').map((x) => ({ ...x, t: now })));
+  assert.strictEqual(water.level(withWater), 'good');
+});

@@ -8,7 +8,9 @@ En avskalad webbapp för att hålla koll på vad du dricker under kvällen. Ämn
   `en öl, en espresso martini, en cola zero och två glas ramlösa`.
   Fritexten förstår antal (`två`, `3x`), volym (`50cl`), alkoholhalt (`4%`), `flaska vin` och ihopsatta drinkar (`vodka sprite`).
 - **Lagrets höjd** = andel av en referensnivå. Den del som går över gränsen blir streckad.
-- **Vätska** räknas netto: alkohol driver ut ca 1 dl vätska per 10 g alkohol, och vatten kompenserar. Vid underskott visas lagret som en kontur.
+- **Vätska** räknas netto: bara vatten och alkoholfritt räknas som påfyllning. Alkohol gör att kroppen gör sig av med ca 1 dl vätska per 10 g alkohol, så öl, vin och drinkar räknas inte som vätska. Vid underskott visas lagret som en kontur. Appen påpekar att vatten minskar risken för huvudvärk, men inte gör en nyktrare.
+- **Alkohol** är i fokus: vad mängden gör med omdöme, sömn och mående, när alkoholen ungefär är ute ur kroppen (och att vänta med bilkörning), kalorier, samt *Dricka smartare*-tips anpassade efter kvällen.
+- **Visste du?** – en kort fakta om alkohol under prognosen, som byts ut när kvällen fylls på.
 - **Imorgon**: en mening om hur kvällen troligen påverkar morgondagen.
 
 | Ämne | Referens (= full nivå) | Lägre nivåer |
@@ -18,7 +20,7 @@ En avskalad webbapp för att hålla koll på vad du dricker under kvällen. Ämn
 | Socker | 50 g (WHO:s dagliga riktvärde) | 25–50 g blodsockersvängning |
 | Vätska | 1 liter netto | – |
 
-Alla värden är ungefärliga och ska ge en bild av kvällen, inte medicinska råd.
+Tonen är saklig och utan pekpinnar, men syftet är att informera om alkoholens effekter och hjälpa till att göra mer informerade val (i linje med IQ:s uppdrag). Alla värden är ungefärliga och ska ge en bild av kvällen, inte medicinska råd.
 
 ## Köra
 

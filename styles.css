@@ -142,6 +142,8 @@ h1 { font-size: 28px; font-weight: 650; letter-spacing: -0.02em; margin: 0; }
 .level-good .hint, .info-headline.level-good { color: var(--good); }
 
 .tomorrow { margin: 20px 0 0; font-size: 15px; min-height: 22px; }
+.fact { margin: 12px 0 0; font-size: 14px; color: var(--muted); }
+.fact-label { color: var(--ink); font-weight: 600; }
 
 /* ---------- Logg ---------- */
 .log ol { list-style: none; margin: 24px 0 0; padding: 0; border-top: 1px solid var(--line); }
@@ -248,6 +250,11 @@ h1 { font-size: 28px; font-weight: 650; letter-spacing: -0.02em; margin: 0; }
 .from li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--line); }
 .from li span:last-child { color: var(--muted); font-variant-numeric: tabular-nums; }
 .fine { color: var(--muted); font-size: 12px; margin: 14px 0 0; }
+.fine a { color: inherit; }
+.tips { margin: 18px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--bg); }
+.tips h3 { font-size: 14px; margin: 0 0 6px; }
+.tips ul { margin: 0; padding-left: 18px; font-size: 14px; }
+.tips li + li { margin-top: 4px; }
 
 /* ---------- Toast ---------- */
 .toast {

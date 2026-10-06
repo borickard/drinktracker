@@ -1,5 +1,5 @@
 (function () {
-  const { SUBSTANCES, totals, tomorrow, fmt, clock } = window.Substances;
+  const { SUBSTANCES, totals, tomorrow, fact, fmt, clock } = window.Substances;
   const STORE_KEY = 'ikvall.entries.v1';
   const GLASS_MAX_UNIT_PX = 110; // höjd för ett ämne som precis når sin gräns
   const MIN_LAYER_PX = 44;
@@ -68,6 +68,9 @@
       ? `${n} ${n === 1 ? 'dryck' : 'drycker'} sedan kl ${clock(Math.min(...entries.map((e) => e.t)))}`
       : '';
     $('tomorrow').textContent = tomorrow(t);
+    const f = fact(t, entries);
+    $('fact').hidden = !f;
+    $('fact-text').textContent = f;
     $('reset').hidden = !entries.length;
 
     const log = $('log');
@@ -176,6 +179,9 @@
     $('info-headline').textContent = d.headline;
     $('info-headline').className = `info-headline level-${s.level(t)}`;
     $('info-body').innerHTML = d.paragraphs.map((p) => `<p>${escapeHtml(p)}</p>`).join('');
+    $('info-tips').hidden = !(d.tips && d.tips.length);
+    $('info-tips-list').innerHTML = (d.tips || []).map((x) => `<li>${escapeHtml(x)}</li>`).join('');
+    $('info-more').hidden = id !== 'alcohol';
     $('info-from').innerHTML = d.from.map((f) => `<li><span>${escapeHtml(f.name)}</span><span>${f.value}</span></li>`).join('');
     openSheet('info-sheet');
   }
