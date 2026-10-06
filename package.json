@@ -1,0 +1,9 @@
+{
+  "name": "ikvall",
+  "private": true,
+  "description": "Håll koll på vad du dricker under kvällen – alkohol, koffein, socker och vätska.",
+  "scripts": {
+    "start": "npx http-server -c-1 .",
+    "test": "node --test tests/*.test.js"
+  }
+}

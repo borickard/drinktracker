@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cut">
+  <meta name="theme-color" content="#f5f3ee" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+  <title>Ikväll</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <h1>Ikväll</h1>
+      <button class="link" id="reset" hidden>Ny kväll</button>
+    </header>
+
+    <p class="summary" id="summary"></p>
+
+    <section class="stage" aria-label="Det du fått i dig">
+      <div class="glass" id="glass" role="list">
+        <p class="empty" id="empty">Vad dricker du ikväll?</p>
+      </div>
+    </section>
+
+    <p class="tomorrow" id="tomorrow"></p>
+
+    <section class="log" aria-label="Drycker">
+      <ol id="log"></ol>
+    </section>
+  </main>
+
+  <button class="add" id="add" aria-label="Lägg till dryck">+</button>
+
+  <!-- Lägg till -->
+  <div class="sheet" id="add-sheet" hidden>
+    <div class="sheet-backdrop" data-close></div>
+    <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="add-title">
+      <div class="grip" data-close></div>
+      <h2 id="add-title">Lägg till</h2>
+      <form id="free-form" autocomplete="off">
+        <input id="free" type="text" placeholder="t.ex. espresso martini, två glas vatten" enterkeyhint="done">
+        <button type="submit" id="free-add" disabled>Lägg till</button>
+      </form>
+      <ul class="preview" id="preview"></ul>
+      <div class="quick" id="quick"></div>
+    </div>
+  </div>
+
+  <!-- Ämnesinfo -->
+  <div class="sheet" id="info-sheet" hidden>
+    <div class="sheet-backdrop" data-close></div>
+    <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="info-title">
+      <div class="grip" data-close></div>
+      <div class="info-head">
+        <span class="dot" id="info-dot"></span>
+        <h2 id="info-title"></h2>
+        <span class="info-amount" id="info-amount"></span>
+      </div>
+      <p class="info-headline" id="info-headline"></p>
+      <div id="info-body"></div>
+      <ul class="from" id="info-from"></ul>
+      <p class="fine">Ungefärliga värden. Kroppar är olika.</p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden><span id="toast-text"></span><button class="link" id="undo">Ångra</button></div>
+
+  <script src="js/drinks.js"></script>
+  <script src="js/substances.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
