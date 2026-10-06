@@ -8,6 +8,8 @@
   const DRIVING_LIMIT = 0.2; // promille, gränsen för rattfylleri
   const ELIMINATION = 0.15; // promille per timme
   const CAFFEINE_HALF_LIFE_H = 5;
+  const CAFFEINE_SLEEP_OK_MG = 50; // under ungefär 50 mg i kroppen påverkas sömnen lite
+  const CAFFEINE_GONE_MG = 10; // i stort sett ute ur kroppen
   const DIURESIS_ML_PER_G = 10; // alkohol driver ut ca 1 dl extra vätska per 10 g
   const WATER_GLASS_ML = 250; // varva: ett glas vatten per standardglas
   const KCAL_PER_G_ALCOHOL = 7;
@@ -71,6 +73,8 @@
     t.alternating = t.alcoholG > 0 && t.waterGlasses >= t.waterNeededGlasses;
     t.lostMl = t.alcoholG * DIURESIS_ML_PER_G;
     t.bac = promille(entries, body);
+    t.caffeineSleepOkAt = t.caffeineMg > 0 ? caffeineBelow(entries, CAFFEINE_SLEEP_OK_MG) : null;
+    t.caffeineGoneAt = t.caffeineMg > 0 ? caffeineBelow(entries, CAFFEINE_GONE_MG) : null;
     t.soberAt = Date.now() + (t.bac / ELIMINATION) * HOUR;
     return t;
   }
@@ -87,6 +91,16 @@
       return sum + e.caffeineMg * e.count * Math.pow(0.5, h / CAFFEINE_HALF_LIFE_H);
     }, 0);
   }
+
+  // Första tidpunkt (från nu) då koffeinet i kroppen understiger en nivå. Steg om 5 min, max 48 h.
+  function caffeineBelow(entries, mg, from = Date.now()) {
+    for (let at = from; at < from + 48 * HOUR; at += 5 * 60e3) {
+      if (caffeineAt(entries, at) < mg) return at;
+    }
+    return null;
+  }
+
+  const atClock = (t) => `kl ${clock(t)}${nextDay(t) ? ' imorgon' : ''}`;
 
   function promilleText(bac) {
     if (bac < DRIVING_LIMIT) return 'Under gränsen för rattfylleri (0,2 ‰), men reaktionsförmågan kan redan vara påverkad.';
@@ -174,6 +188,7 @@
     {
       id: 'caffeine', name: 'Koffein',
       amount: (t) => fmt(t.caffeineMg) + ' mg',
+      sub: (t) => (t.caffeineSleepOkAt > Date.now() ? `sömnvänligt ${clock(t.caffeineSleepOkAt)}` : ''),
       load: (t) => t.caffeineMg / 200,
       level(t) {
         if (t.caffeineMg < 1) return 'none';
@@ -196,8 +211,16 @@
           p.push(`${mg} mg på kvällen ger ofta längre insomning och mindre djupsömn, även om du känner dig trött. Återhämtningen blir sämre.`);
         }
         if (t.alcoholG > 0) p.push('Tillsammans med alkohol känner du dig piggare men blir inte nyktrare. Det gör det lätt att dricka mer än man tänkt.');
-        const later = Date.now() + 6 * HOUR;
-        p.push(`Halveringstiden är ca 5 timmar. Kl ${clock(later)} finns ungefär ${fmt(caffeineAt(entries, later))} mg kvar i kroppen.`);
+        const now = Date.now();
+        const left = caffeineAt(entries, now);
+        if (left >= CAFFEINE_SLEEP_OK_MG) {
+          p.push(`Just nu finns ungefär ${fmt(left)} mg i kroppen. Runt ${atClock(t.caffeineSleepOkAt)} är det under ${CAFFEINE_SLEEP_OK_MG} mg – då påverkar koffeinet sömnen lite. I stort sett ute ur kroppen är det runt ${atClock(t.caffeineGoneAt)}.`);
+        } else if (left >= CAFFEINE_GONE_MG) {
+          p.push(`Det som finns kvar, ungefär ${fmt(left)} mg, påverkar sömnen lite. I stort sett ute ur kroppen är det runt ${atClock(t.caffeineGoneAt)}.`);
+        } else {
+          p.push('Koffeinet är i stort sett ute ur kroppen.');
+        }
+        p.push('Halveringstiden är ungefär 5 timmar men varierar mellan personer, ofta 3–7 timmar.');
         return { headline, paragraphs: p, from: contributors(entries, 'caffeineMg', 'mg') };
       },
     },

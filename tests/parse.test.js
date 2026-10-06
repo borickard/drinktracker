@@ -74,6 +74,17 @@ test('kaffe räknas inte som vatten', () => {
   assert.ok(tot('ett te').softMl > 0);
 });
 
+test('tid när koffeinet inte längre påverkar sömnen', () => {
+  const now = Date.now();
+  const e = Drinks.parse('2 kaffe').map((x) => ({ ...x, t: now })); // 200 mg
+  const t = S.totals(e);
+  // 200 → 50 mg = två halveringstider ≈ 10 h; under 10 mg ≈ 21–22 h
+  const h = (at) => (at - now) / 3600e3;
+  assert.ok(Math.abs(h(t.caffeineSleepOkAt) - 10) < 0.2);
+  assert.ok(h(t.caffeineGoneAt) > 21 && h(t.caffeineGoneAt) < 22.5);
+  assert.ok(S.caffeineAt(e, t.caffeineSleepOkAt) < 50);
+});
+
 test('profilen påverkar promille men inte gränsen', () => {
   const now = Date.now();
   const e = Drinks.parse('3 öl').map((x) => ({ ...x, t: now }));

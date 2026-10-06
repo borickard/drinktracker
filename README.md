@@ -25,7 +25,7 @@ Källa: [Läkartidningen om Socialstyrelsens nya alkoholråd](https://lakartidni
 | Ämne | Referens (= full nivå) | Lägre nivåer |
 |---|---|---|
 | Alkohol | 4 standardglas (Socialstyrelsens gräns per tillfälle) | < 2 märks redan, 2–4 påverkar sömnen |
-| Koffein | 200 mg på kvällen | < 100 mg lagom, 100–200 kan skjuta upp sömnen. Halveringstid 5 h |
+| Koffein | 200 mg på kvällen | < 100 mg lagom, 100–200 kan skjuta upp sömnen. Halveringstid ~5 h; appen visar när det är under 50 mg (sömnvänligt) och under 10 mg (i stort sett ute) |
 | Socker | 50 g (WHO:s dagliga riktvärde) | 25–50 g blodsockersvängning |
 | Vatten | 1 glas per alkoholdryck | – |
 
