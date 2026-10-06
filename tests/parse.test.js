@@ -7,7 +7,7 @@ const names = (text) => Drinks.parse(text).map((x) => [x.name, x.count]);
 
 test('tolkar exemplet från idén', () => {
   assert.deepStrictEqual(names('en öl, en espresso martini, en cola zero och två glas ramlösa'),
-    [['Öl', 1], ['Espresso Martini', 1], ['Läsk zero', 1], ['Vatten', 2]]);
+    [['Öl', 1], ['Espresso Martini', 1], ['Cola zero', 1], ['Vatten', 2]]);
 });
 
 test('längsta namnet vinner', () => {
@@ -28,6 +28,16 @@ test('volym, procent och flaska', () => {
 test('ihopsatt drink summerar ingredienser', () => {
   const [d] = Drinks.parse('vodka sprite');
   assert.ok(d.alcoholG > 12 && d.sugarG > 20);
+});
+
+test('läsk med och utan koffein', () => {
+  const caf = (q) => Drinks.parse(q)[0].caffeineMg;
+  assert.ok(caf('cola') > 0);
+  assert.ok(caf('cola zero') > 0);
+  assert.ok(caf('pepsi max') > 0);
+  assert.strictEqual(caf('fanta'), 0);
+  assert.strictEqual(caf('sprite zero'), 0);
+  assert.strictEqual(caf('läsk'), 0);
 });
 
 test('okänd dryck markeras', () => {

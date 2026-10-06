@@ -28,8 +28,15 @@
     cider: svg(`
       <path d="M9.6 11h12.8L21 26H11z" fill="#d6c158"/>
       <path d="M9 7h14l-1.8 19.5h-10.4z" ${S} fill="none"/>`),
-    lask: can('#b3262d'),
-    'lask-zero': can('#2b2b2b', `<path d="M10 14h12v4H10z" fill="#c8333a"/>`),
+    cola: can('#b3262d'),
+    'cola-zero': can('#2b2b2b', `<path d="M10 14h12v4H10z" fill="#c8333a"/>`),
+    lask: can('#e8892b', `<circle cx="16" cy="16" r="3" fill="#f6d36b"/>`),
+    'lask-zero': can('#e9e5dc', `<circle cx="16" cy="16" r="3" fill="#e8892b"/>`),
+    'alkoholfri-ol': svg(`
+      <path d="M8 10h13v14a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2z" fill="#f0d79a"/>
+      <rect x="7.5" y="6" width="14" height="5" rx="2.5" fill="#fbf3df"/>
+      <text x="14.5" y="22.5" text-anchor="middle" font-size="9" font-weight="700" font-family="system-ui, sans-serif" fill="#8a6a2a">0</text>
+      <path d="M8 8.5v15.5a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8.5M21 12h2.5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H21" ${S} fill="none"/>`),
     kaffe: svg(`
       <path d="M7 12h15v6a6 6 0 0 1-6 6h-3a6 6 0 0 1-6-6z" fill="#6e4c3a"/>
       <path d="M7 12h15v6a6 6 0 0 1-6 6h-3a6 6 0 0 1-6-6zM22 14h1.5a2.5 2.5 0 0 1 0 5H22M6 27h18M12 5.5c-1 1 1 2 0 3.5M17 5.5c-1 1 1 2 0 3.5" ${S} fill="none"/>`),
@@ -53,7 +60,7 @@
 
   // Symbol för en dryck: egen symbol, annars en närliggande, annars utifrån innehållet.
   const ALIAS = {
-    'alkoholfri-ol': 'ol', folkol: 'ol', 'pepsi-max': 'lask-zero', fanta: 'lask', tonic: 'vatten', 'ginger-beer': 'cider',
+    folkol: 'ol', 'pepsi-max': 'cola-zero', tonic: 'vatten', 'ginger-beer': 'cider',
     'energi-zero': 'energi', matcha: 'te', orte: 'te', 'varm-choklad': 'kaffe', kombucha: 'te', 'irish-coffee': 'kaffe',
     likor: 'sprit', jager: 'sprit', portvin: 'vin',
   };

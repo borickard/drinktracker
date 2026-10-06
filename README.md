@@ -4,7 +4,7 @@ En avskalad webbapp för att hålla koll på vad du dricker under kvällen. Ämn
 
 ## Så funkar det
 
-- **Lägg till** med snabbval (med symboler: öl, vin, bubbel, sprit, läsk, kaffe, vatten …) eller fritext, t.ex.
+- **Lägg till** med snabbval (med symboler: öl, vin, bubbel, sprit, alkoholfri öl, cola och läsk – med respektive utan koffein –, kaffe, vatten …) eller fritext, t.ex.
   `en öl, en espresso martini, en cola zero och två glas ramlösa`.
   Fritexten förstår antal (`två`, `3x`), volym (`50cl`), alkoholhalt (`4%`), `flaska vin` och ihopsatta drinkar (`vodka sprite`).
 - **Lagrets höjd** = andel av en referensnivå. Den del som går över gränsen blir streckad.
