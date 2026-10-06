@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dagen före – logoförslag</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bricolage+Grotesque:opsz,wght@12..96,800&family=DM+Serif+Display:ital@0;1&family=Fraunces:ital,opsz,wght,SOFT@1,9..144,600,100&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;600;700&family=Unbounded:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f3ee; --surface: #fff; --ink: #1b1a17; --muted: #8a867d; --line: #e4e0d7;
+      --water: #8fb9df; --alcohol: #e2a64b; --caffeine: #6e4c3a; --sugar: #e69bb2;
+      --night: #1f2540;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 Inter, system-ui, sans-serif; }
+    .page { max-width: 980px; margin: 0 auto; padding: 32px 16px 80px; }
+    h1 { font-size: 28px; margin: 0 0 6px; letter-spacing: -.02em; }
+    .intro { color: var(--muted); margin: 0 0 28px; max-width: 60ch; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 22px; margin-bottom: 22px; }
+    .card h2 { margin: 0; font-size: 18px; }
+    .card h2 span { color: var(--muted); font-weight: 600; margin-right: 6px; }
+    .card .why { margin: 4px 0 16px; color: var(--muted); font-size: 14px; max-width: 70ch; }
+    .card .font { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 14px; }
+    .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tile { border-radius: 16px; min-height: 150px; display: grid; place-items: center; padding: 20px; overflow: hidden; }
+    .tile.light { background: #f5f3ee; color: #1b1a17; }
+    .tile.dark { background: #121212; color: #f0ede6; }
+    .usage { display: grid; grid-template-columns: 1fr auto; gap: 12px; margin-top: 12px; align-items: stretch; }
+    .header-demo { border-radius: 16px; background: linear-gradient(135deg, #f6e7cf, #e8eff6); padding: 18px 18px 14px; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+    .header-demo .row { display: flex; align-items: center; justify-content: space-between; }
+    .header-demo small { color: var(--muted); font-size: 13px; }
+    .header-demo .reset { color: var(--muted); font-size: 13px; }
+    .appicon { width: 92px; height: 92px; border-radius: 22px; display: grid; place-items: center; box-shadow: 0 10px 24px -12px rgba(0,0,0,.4); }
+    @media (max-width: 640px) { .tiles { grid-template-columns: 1fr; } }
+
+    /* ---------- 1. Prickarna ---------- */
+    .l1 { font-family: "Instrument Serif", serif; font-size: 64px; line-height: 1; letter-spacing: -.01em; white-space: nowrap; }
+    .l1 .o { position: relative; display: inline-block; }
+    .l1 .o i { position: absolute; top: .02em; width: .12em; height: .12em; border-radius: 50%; }
+    .l1 .o i:first-child { left: -.01em; background: var(--water); }
+    .l1 .o i:last-child { right: -.01em; background: var(--alcohol); }
+    .l1.sm { font-size: 34px; }
+    .l1.icon { font-size: 48px; }
+
+    /* ---------- 2. Efter → före ---------- */
+    .l2 { font-family: "DM Serif Display", serif; font-size: 58px; line-height: .95; display: inline-flex; align-items: flex-end; gap: .22em; white-space: nowrap; }
+    .l2 .stack { display: inline-flex; flex-direction: column; align-items: flex-start; }
+    .l2 .efter { font-size: .42em; font-style: italic; color: var(--muted); position: relative; margin-bottom: .08em; }
+    .l2 .efter::after { content: ""; position: absolute; left: -6%; right: -6%; top: 52%; height: .12em; background: #c8553f; border-radius: 1em; transform: rotate(-4deg); }
+    .l2 .fore { font-style: italic; }
+    .l2.sm { font-size: 30px; }
+    .appicon.i2 { background: #1b1a17; color: #f5f3ee; font: italic 40px/1 "DM Serif Display", serif; }
+    .appicon.i2 span { position: relative; }
+    .appicon.i2 span::after { content: ""; position: absolute; left: -10%; right: -10%; bottom: -6px; height: 5px; border-radius: 3px; background: var(--alcohol); }
+
+    /* ---------- 3. Lagren ---------- */
+    .l3 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 70px; line-height: .9; letter-spacing: -.045em; white-space: nowrap;
+      background: linear-gradient(to top, var(--water) 0 30%, var(--alcohol) 30% 58%, var(--sugar) 58% 78%, var(--caffeine) 78%);
+      -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .05em; }
+    .dark .l3 { background: linear-gradient(to top, #6f9fc9 0 30%, #d39a43 30% 58%, #d98aa2 58% 78%, #a07862 78%); -webkit-background-clip: text; background-clip: text; }
+    .l3.sm { font-size: 36px; }
+    .l3.stack { display: inline-block; font-size: 23px; line-height: .86; text-align: left; letter-spacing: -.05em; }
+    .appicon.i3 { background: #f5f3ee; }
+
+    /* ---------- 4. Glaset ---------- */
+    .l4 { display: inline-flex; align-items: center; gap: .32em; font-family: "Unbounded", sans-serif; font-weight: 700; font-size: 40px; letter-spacing: -.03em; white-space: nowrap; }
+    .glassmark { width: .62em; height: .9em; border-radius: .1em .1em .2em .2em; background: currentColor; opacity: .12; position: relative; display: inline-block; }
+    .glassmark-wrap { position: relative; display: inline-block; width: .62em; height: .9em; }
+    .glassmark-wrap .glassmark { position: absolute; inset: 0; }
+    .glassmark-wrap b { position: absolute; left: .07em; right: .07em; border-radius: .04em; }
+    .glassmark-wrap b:nth-of-type(1) { bottom: .07em; height: .22em; background: var(--water); border-radius: .04em .04em .14em .14em; }
+    .glassmark-wrap b:nth-of-type(2) { bottom: .31em; height: .18em; background: var(--alcohol); }
+    .glassmark-wrap b:nth-of-type(3) { bottom: .51em; height: .12em; background: var(--sugar); }
+    .glassmark-wrap b:nth-of-type(4) { bottom: .65em; height: .1em; background: var(--caffeine); }
+    .l4 .word { line-height: 1; }
+    .l4 .word em { font-style: normal; color: var(--alcohol); }
+    .l4.sm { font-size: 24px; }
+    .appicon.i4 { background: #1b1a17; color: #f5f3ee; font-size: 64px; }
+
+    /* ---------- 5. Kvällsljus ---------- */
+    .l5 { font-family: "Fraunces", serif; font-style: italic; font-weight: 600; font-variation-settings: "SOFT" 100, "opsz" 144; font-size: 62px; line-height: 1; letter-spacing: -.02em; white-space: nowrap; position: relative; }
+    .l5 .moon { position: absolute; right: -.42em; top: -.18em; width: .42em; height: .42em; border-radius: 50%; box-shadow: .1em .06em 0 0 var(--alcohol); transform: rotate(-20deg); }
+    .l5 .star { position: absolute; right: -.62em; top: .2em; width: .12em; height: .12em; background: var(--alcohol); clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); }
+    .tile.night { background: var(--night); color: #f6eedf; }
+    .l5.sm { font-size: 32px; }
+    .appicon.i5 { background: var(--night); color: #f6eedf; }
+
+    /* ---------- 6. Etiketten ---------- */
+    .l6 { display: inline-flex; align-items: center; gap: .5em; padding: .35em .75em .35em .45em; border: .09em solid currentColor; border-radius: 999px; font-family: "Archivo Black", sans-serif; font-size: 34px; letter-spacing: .02em; text-transform: uppercase; white-space: nowrap; }
+    .l6 .level { width: .9em; height: .9em; border-radius: 50%; border: .08em solid currentColor; position: relative; overflow: hidden; }
+    .l6 .level::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 55%; background: var(--water); animation: slosh 3.5s ease-in-out infinite alternate; }
+    @keyframes slosh { from { transform: translateY(8%) rotate(-8deg); } to { transform: translateY(-4%) rotate(8deg); } }
+    .l6.sm { font-size: 18px; }
+    .appicon.i6 { background: #f5f3ee; color: #1b1a17; }
+    .appicon.i6 .l6 { font-size: 15px; padding: .5em; gap: 0; }
+    .appicon.i6 .l6 .txt { display: none; }
+    .appicon.i6 .l6 .level { width: 2.6em; height: 2.6em; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Dagen före – logoförslag</h1>
+    <p class="intro">Sex riktningar för ordbilden. Varje förslag visas i ljust och mörkt läge, i appens sidhuvud och som appikon. Säg vilket nummer du gillar (eller vad du vill blanda) så bygger jag in det.</p>
+
+    <!-- 1 -->
+    <section class="card">
+      <h2><span>1</span>Prickarna</h2>
+      <p class="why">Elegant, redaktionell serif. Prickarna över ö:et blir en vattendroppe och en droppe öl – samma färger som lagren i glaset. Diskret men igenkännbart.</p>
+      <div class="font">Instrument Serif</div>
+      <div class="tiles">
+        <div class="tile light"><div class="l1">Dagen f<span class="o">o<i></i><i></i></span>re</div></div>
+        <div class="tile dark"><div class="l1">Dagen f<span class="o">o<i></i><i></i></span>re</div></div>
+      </div>
+      <div class="usage">
+        <div class="header-demo"><div class="row"><div class="l1 sm">Dagen f<span class="o">o<i></i><i></i></span>re</div><span class="reset">Börja om</span></div><small>3 drycker sedan kl 19:00</small></div>
+        <div class="appicon" style="background:#1b1a17;color:#f5f3ee"><div class="l1 icon">f<span class="o">o<i></i><i></i></span></div></div>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="card">
+      <h2><span>2</span>Efter → före</h2>
+      <p class="why">Ordleken blir själva logotypen: "efter" är överstruket och ersatt av "före". Säger direkt vad tjänsten handlar om – tänk på morgondagen redan nu. Lite lekfull, tydligt budskap.</p>
+      <div class="font">DM Serif Display</div>
+      <div class="tiles">
+        <div class="tile light"><div class="l2">Dagen <span class="stack"><span class="efter">efter</span><span class="fore">före</span></span></div></div>
+        <div class="tile dark"><div class="l2">Dagen <span class="stack"><span class="efter">efter</span><span class="fore">före</span></span></div></div>
+      </div>
+      <div class="usage">
+        <div class="header-demo"><div class="row"><div class="l2 sm">Dagen <span class="stack"><span class="efter">efter</span><span class="fore">före</span></span></div><span class="reset">Börja om</span></div><small>3 drycker sedan kl 19:00</small></div>
+        <div class="appicon i2"><span>df</span></div>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="card">
+      <h2><span>3</span>Lagren</h2>
+      <p class="why">Tung, kompakt grotesk där bokstäverna fylls som glaset – vatten, alkohol, socker och koffein nerifrån och upp. Mest utstickande och närmast appens grafik.</p>
+      <div class="font">Bricolage Grotesque ExtraBold</div>
+      <div class="tiles">
+        <div class="tile light"><div class="l3">Dagen före</div></div>
+        <div class="tile dark"><div class="l3">Dagen före</div></div>
+      </div>
+      <div class="usage">
+        <div class="header-demo"><div class="row"><div class="l3 sm">Dagen före</div><span class="reset">Börja om</span></div><small>3 drycker sedan kl 19:00</small></div>
+        <div class="appicon i3"><div class="l3 stack">Dagen<br>före</div></div>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="card">
+      <h2><span>4</span>Glaset</h2>
+      <p class="why">Ett eget märke – ett litet glas med de fyra lagren – bredvid en bred, rundad ordbild. Fungerar som appikon och favicon, och känns mest som en app.</p>
+      <div class="font">Unbounded Bold + glasmärke</div>
+      <div class="tiles">
+        <div class="tile light"><div class="l4"><span class="glassmark-wrap"><span class="glassmark"></span><b></b><b></b><b></b><b></b></span><span class="word">dagen före</span></div></div>
+        <div class="tile dark"><div class="l4"><span class="glassmark-wrap"><span class="glassmark"></span><b></b><b></b><b></b><b></b></span><span class="word">dagen före</span></div></div>
+      </div>
+      <div class="usage">
+        <div class="header-demo"><div class="row"><div class="l4 sm"><span class="glassmark-wrap"><span class="glassmark"></span><b></b><b></b><b></b><b></b></span><span class="word">dagen före</span></div><span class="reset">Börja om</span></div><small>3 drycker sedan kl 19:00</small></div>
+        <div class="appicon i4"><span class="glassmark-wrap"><span class="glassmark" style="opacity:.18"></span><b></b><b></b><b></b><b></b></span></div>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="card">
+      <h2><span>5</span>Kvällsljus</h2>
+      <p class="why">Mjuk, rundad kursiv serif med en månskära – kvällen och natten, sömnen. Varmare och mer personlig, passar en lugn och omtänksam ton.</p>
+      <div class="font">Fraunces Italic (Soft)</div>
+      <div class="tiles">
+        <div class="tile light"><div class="l5">Dagen före<span class="moon"></span><span class="star"></span></div></div>
+        <div class="tile night"><div class="l5">Dagen före<span class="moon"></span><span class="star"></span></div></div>
+      </div>
+      <div class="usage">
+        <div class="header-demo"><div class="row"><div class="l5 sm">Dagen före<span class="moon"></span><span class="star"></span></div><span class="reset">Börja om</span></div><small>3 drycker sedan kl 19:00</small></div>
+        <div class="appicon i5"><div class="l5" style="font-size:40px;margin-right:12px">Df<span class="moon"></span></div></div>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section class="card">
+      <h2><span>6</span>Etiketten</h2>
+      <p class="why">Grafisk etikett som på en flaska, med en liten nivåmätare där vattnet skvalpar. Kraftfull och tydlig i små storlekar, lite mer kampanj-känsla.</p>
+      <div class="font">Archivo Black</div>
+      <div class="tiles">
+        <div class="tile light"><div class="l6"><span class="level"></span><span class="txt">Dagen före</span></div></div>
+        <div class="tile dark"><div class="l6"><span class="level"></span><span class="txt">Dagen före</span></div></div>
+      </div>
+      <div class="usage">
+        <div class="header-demo"><div class="row"><div class="l6 sm"><span class="level"></span><span class="txt">Dagen före</span></div><span class="reset">Börja om</span></div><small>3 drycker sedan kl 19:00</small></div>
+        <div class="appicon i6"><div class="l6"><span class="level"></span><span class="txt">Dagen före</span></div></div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
