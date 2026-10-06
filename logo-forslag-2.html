@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dagen före – logoförslag, omgång 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Familjen+Grotesk:wght@700&family=Inter:wght@400;600;700&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f3ee; --surface: #fff; --ink: #1b1a17; --muted: #8a867d; --line: #e4e0d7;
+      --water: #8fb9df; --alcohol: #e2a64b; --caffeine: #6e4c3a; --sugar: #e69bb2;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 Inter, system-ui, sans-serif; }
+    .page { max-width: 980px; margin: 0 auto; padding: 32px 16px 80px; }
+    h1 { font-size: 28px; margin: 0 0 6px; letter-spacing: -.02em; }
+    .intro { color: var(--muted); margin: 0 0 28px; max-width: 62ch; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 22px; margin-bottom: 22px; }
+    .card h2 { margin: 0; font-size: 18px; }
+    .card h2 span { color: var(--muted); font-weight: 600; margin-right: 6px; }
+    .card .why { margin: 4px 0 16px; color: var(--muted); font-size: 14px; max-width: 70ch; }
+    .card .font { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 14px; }
+    .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tile { border-radius: 16px; min-height: 150px; display: grid; place-items: center; padding: 20px; overflow: hidden; }
+    .tile.light { background: #f5f3ee; color: #1b1a17; }
+    .tile.dark { background: #121212; color: #f0ede6; }
+    .usage { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; margin-top: 12px; align-items: stretch; }
+    .header-demo { border-radius: 16px; background: linear-gradient(135deg, #f6e7cf, #e8eff6); padding: 18px 18px 14px; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+    .header-demo .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .header-demo small, .header-demo .reset { color: var(--muted); font-size: 13px; }
+    .appicon { width: 92px; height: 92px; border-radius: 22px; display: grid; place-items: center; box-shadow: 0 10px 24px -12px rgba(0,0,0,.4); }
+    .appicon.ink { background: #1b1a17; color: #f5f3ee; }
+    .appicon.cream { background: #f5f3ee; color: #1b1a17; }
+    .appicon .mark { font-size: 64px; }
+    @media (max-width: 640px) { .tiles { grid-template-columns: 1fr; } .usage { grid-template-columns: 1fr auto; } .usage .header-demo { grid-column: 1 / -1; } }
+
+    /* Glasmärket (från förslag 4), lite mjukare och tydligare glas */
+    .mark { position: relative; display: inline-block; width: .64em; height: .92em; flex: none; }
+    .mark .g { position: absolute; inset: 0; border-radius: .1em .1em .22em .22em; background: currentColor; opacity: .13; }
+    .mark .g::after { content: ""; position: absolute; left: .09em; top: .1em; width: .05em; bottom: .3em; border-radius: .03em; background: #fff; opacity: .9; }
+    .mark b { position: absolute; left: .07em; right: .07em; border-radius: .04em; }
+    .mark b:nth-of-type(1) { bottom: .07em; height: .23em; background: var(--water); border-radius: .04em .04em .16em .16em; }
+    .mark b:nth-of-type(2) { bottom: .32em; height: .19em; background: var(--alcohol); }
+    .mark b:nth-of-type(3) { bottom: .53em; height: .12em; background: var(--sugar); }
+    .mark b:nth-of-type(4) { bottom: .67em; height: .11em; background: var(--caffeine); }
+    .dark .mark b:nth-of-type(4), .ink .mark b:nth-of-type(4) { background: #a07862; }
+
+    .logo { display: inline-flex; align-items: center; gap: .26em; white-space: nowrap; line-height: 1; }
+    .logo.sm { font-size: 30px !important; }
+
+    /* A – Bricolage, mörk text */
+    .a { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 60px; letter-spacing: -.045em; }
+
+    /* B – Bricolage, bokstäverna fylls i lager */
+    .b { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 60px; letter-spacing: -.045em; }
+    .layered { background: linear-gradient(to top, var(--water) 0 30%, var(--alcohol) 30% 58%, var(--sugar) 58% 78%, var(--caffeine) 78%);
+      -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .06em; }
+    .dark .layered { background: linear-gradient(to top, #6f9fc9 0 30%, #d39a43 30% 58%, #d98aa2 58% 78%, #a07862 78%); -webkit-background-clip: text; background-clip: text; }
+
+    /* C – Bricolage, "Dagen" i mörkt, "före" i lager */
+    .c { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 60px; letter-spacing: -.045em; }
+    .c .word { display: inline-flex; gap: .22em; }
+
+    /* D – Bricolage, gemener, staplat bredvid glaset */
+    .d { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 46px; letter-spacing: -.045em; }
+    .d .stack { display: inline-flex; flex-direction: column; line-height: .86; }
+    .d .mark { font-size: 1.9em; }
+    .d .stack span:last-child { color: var(--alcohol); }
+
+    /* E – Familjen Grotesk (svensk) */
+    .e { font-family: "Familjen Grotesk", sans-serif; font-weight: 700; font-size: 58px; letter-spacing: -.035em; }
+
+    /* F – Outfit, rundad geometrisk */
+    .f { font-family: "Outfit", sans-serif; font-weight: 800; font-size: 58px; letter-spacing: -.04em; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Logoförslag, omgång 2</h1>
+    <p class="intro">Glasmärket från förslag 4 ihop med typsnittet från förslag 3 (Bricolage Grotesque) i fyra varianter, plus två andra typsnitt för jämförelse. Säg vilken bokstav du gillar.</p>
+
+    <section class="card">
+      <h2><span>A</span>Glaset + Bricolage, ren</h2>
+      <p class="why">Glasmärket bär färgerna, ordbilden är tung och mörk. Lugnast och mest tidlös – fungerar på alla bakgrunder.</p>
+      <div class="font">Bricolage Grotesque ExtraBold</div>
+      <div class="tiles">
+        <div class="tile light"><div class="logo a"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span>Dagen före</div></div>
+        <div class="tile dark"><div class="logo a"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span>Dagen före</div></div>
+      </div>
+      <div class="usage">
+        <div class="header-demo"><div class="row"><div class="logo a sm"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span>Dagen före</div><span class="reset">Börja om</span></div><small>3 drycker sedan kl 19:00</small></div>
+        <div class="appicon ink"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span></div>
+        <div class="appicon cream"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span>B</span>Glaset + Bricolage i lager</h2>
+      <p class="why">Både märket och bokstäverna fylls i lager. Mest färg och mest utstickande, men lite mindre läsbart i små storlekar.</p>
+      <div class="font">Bricolage Grotesque ExtraBold</div>
+      <div class="tiles">
+        <div class="tile light"><div class="logo b"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span><span class="layered">Dagen före</span></div></div>
+        <div class="tile dark"><div class="logo b"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span><span class="layered">Dagen före</span></div></div>
+      </div>
+      <div class="usage">
+        <div class="header-demo"><div class="row"><div class="logo b sm"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span><span class="layered">Dagen före</span></div><span class="reset">Börja om</span></div><small>3 drycker sedan kl 19:00</small></div>
+        <div class="appicon ink"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span></div>
+        <div class="appicon cream"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span>C</span>Glaset + Bricolage, "före" i lager</h2>
+      <p class="why">Mellanvägen: "Dagen" i mörkt och "före" fylls i lager. Betonar ordet som gör poängen, och håller läsbarheten.</p>
+      <div class="font">Bricolage Grotesque ExtraBold</div>
+      <div class="tiles">
+        <div class="tile light"><div class="logo c"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span><span class="word"><span>Dagen</span><span class="layered">före</span></span></div></div>
+        <div class="tile dark"><div class="logo c"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span><span class="word"><span>Dagen</span><span class="layered">före</span></span></div></div>
+      </div>
+      <div class="usage">
+        <div class="header-demo"><div class="row"><div class="logo c sm"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span><span class="word"><span>Dagen</span><span class="layered">före</span></span></div><span class="reset">Börja om</span></div><small>3 drycker sedan kl 19:00</small></div>
+        <div class="appicon ink"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span></div>
+        <div class="appicon cream"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span>D</span>Glaset + Bricolage, staplat</h2>
+      <p class="why">Orden staplade bredvid ett större glas – mer som ett märke/emblem. Kompakt och bra i kvadratiska ytor, t.ex. sociala medier.</p>
+      <div class="font">Bricolage Grotesque ExtraBold</div>
+      <div class="tiles">
+        <div class="tile light"><div class="logo d"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span><span class="stack"><span>Dagen</span><span>före</span></span></div></div>
+        <div class="tile dark"><div class="logo d"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span><span class="stack"><span>Dagen</span><span>före</span></span></div></div>
+      </div>
+      <div class="usage">
+        <div class="header-demo"><div class="row"><div class="logo d" style="font-size:22px"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span><span class="stack"><span>Dagen</span><span>före</span></span></div><span class="reset">Börja om</span></div><small>3 drycker sedan kl 19:00</small></div>
+        <div class="appicon ink"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span></div>
+        <div class="appicon cream"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span>E</span>Glaset + Familjen Grotesk</h2>
+      <p class="why">Jämförelse: en svensk grotesk (från byrån Familjen i Stockholm) – lite smalare och mer vänlig än Bricolage, med karaktär i a och g.</p>
+      <div class="font">Familjen Grotesk Bold</div>
+      <div class="tiles">
+        <div class="tile light"><div class="logo e"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span>Dagen före</div></div>
+        <div class="tile dark"><div class="logo e"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span>Dagen före</div></div>
+      </div>
+      <div class="usage">
+        <div class="header-demo"><div class="row"><div class="logo e sm"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span>Dagen före</div><span class="reset">Börja om</span></div><small>3 drycker sedan kl 19:00</small></div>
+        <div class="appicon ink"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span></div>
+        <div class="appicon cream"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span>F</span>Glaset + Outfit</h2>
+      <p class="why">Jämförelse: rund och geometrisk – mjukare och mer "app" än Bricolage, men mindre egen.</p>
+      <div class="font">Outfit ExtraBold</div>
+      <div class="tiles">
+        <div class="tile light"><div class="logo f"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span>Dagen före</div></div>
+        <div class="tile dark"><div class="logo f"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span>Dagen före</div></div>
+      </div>
+      <div class="usage">
+        <div class="header-demo"><div class="row"><div class="logo f sm"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span>Dagen före</div><span class="reset">Börja om</span></div><small>3 drycker sedan kl 19:00</small></div>
+        <div class="appicon ink"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span></div>
+        <div class="appicon cream"><span class="mark"><span class="g"></span><b></b><b></b><b></b><b></b></span></div>
+      </div>
+    </section>
+
+    <p class="intro"><a href="logo-forslag.html">← Första omgången</a></p>
+  </div>
+</body>
+</html>
