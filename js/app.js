@@ -5,6 +5,7 @@
   const GLASS_MAX_UNIT_PX = 110; // höjd för ett ämne som precis når sin gräns
   const MIN_LAYER_PX = 44;
   const MIN_LAYER_HINT_PX = 62; // plats för tre rader etikett
+  const MIN_LAYER_WRAP_PX = 80; // vattnets status kan bli två rader
 
   const $ = (id) => document.getElementById(id);
   let entries = load();
@@ -43,7 +44,7 @@
     glass.querySelectorAll('.layer').forEach((n) => { if (!keep.has(n.dataset.id)) n.remove(); });
 
     const h = glass.clientHeight - 8;
-    const minPx = (x) => (x.level === 'ok' ? MIN_LAYER_PX : MIN_LAYER_HINT_PX);
+    const minPx = (x) => (x.level === 'ok' ? MIN_LAYER_PX : x.s.id === 'water' ? MIN_LAYER_WRAP_PX : MIN_LAYER_HINT_PX);
     const sum = active.reduce((a, x) => a + Math.min(x.load, 2.5), 0);
     const unit = sum ? Math.min(GLASS_MAX_UNIT_PX, h / sum) : 0;
     let heights = active.map((x) => Math.max(minPx(x), Math.min(x.load, 2.5) * unit));
@@ -69,7 +70,8 @@
       }
       // Del över gränsen streckas.
       el.style.setProperty('--limit', x.load > 1 ? (100 / Math.min(x.load, 2.5)).toFixed(1) + '%' : '100%');
-      const hint = x.level === 'ok' ? '' : `<span class="hint">${x.s.describe(t, entries).headline}</span>`;
+      const d = x.level === 'ok' ? null : x.s.describe(t, entries);
+      const hint = d ? `<span class="hint">${d.short || d.headline}</span>` : '';
       const sub = x.s.sub ? x.s.sub(t) : '';
       el.innerHTML = `<span class="label"><span class="name">${x.s.name}${sub ? ` · ${sub}` : ''}</span><span class="amount">${x.s.amount(t)}</span>${hint}</span>`;
       el.setAttribute('aria-label', `${x.s.name} ${x.s.amount(t)}. Visa mer`);
@@ -105,7 +107,7 @@
   function tags(e) {
     const out = [];
     const units = (e.alcoholG * e.count) / 12;
-    if (units >= 0.05) out.push(`<i class="t-alcohol"></i>${fmt(units, 1)}`);
+    if (units >= 0.2) out.push(`<i class="t-alcohol"></i>${fmt(units, 1)}`);
     if (e.caffeineMg) out.push(`<i class="t-caffeine"></i>${fmt(e.caffeineMg * e.count)}`);
     if (e.sugarG >= 1) out.push(`<i class="t-sugar"></i>${fmt(e.sugarG * e.count)}`);
     return out.map((x) => `<span>${x}</span>`).join('');
@@ -164,7 +166,7 @@
       } else {
         const bits = [];
         const units = (p.alcoholG * p.count) / 12;
-        if (units >= 0.05) bits.push(`${fmt(units, 1)} standardglas`);
+        if (units >= 0.2) bits.push(`${fmt(units, 1)} standardglas`);
         if (p.caffeineMg) bits.push(`${fmt(p.caffeineMg * p.count)} mg koffein`);
         if (p.sugarG >= 1) bits.push(`${fmt(p.sugarG * p.count)} g socker`);
         if (!bits.length) bits.push(`${fmt((p.ml * p.count) / 10)} cl vätska`);

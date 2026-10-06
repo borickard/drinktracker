@@ -65,6 +65,22 @@ test('en öl räknas inte som vätska – varva med vatten', () => {
   assert.match(S.tomorrow(heavy), /inte fullt ut/);
 });
 
+test('varannan vatten räknas i glas', () => {
+  const now = Date.now();
+  const water = S.SUBSTANCES.find((s) => s.id === 'water');
+  const tot = (q) => S.totals(Drinks.parse(q).map((x) => ({ ...x, t: now })));
+  const head = (q) => { const t = tot(q); return water.describe(t, []).headline; };
+  assert.strictEqual(tot('en öl och en cola zero').waterGlasses, 1);
+  assert.strictEqual(head('en öl och en cola zero'), 'Varannan vatten ✅');
+  assert.strictEqual(head('en öl och en alkoholfri öl'), 'Varannan vatten ✅');
+  assert.strictEqual(head('2 öl och 3 glas vatten'), 'Bra! Du dricker tillräckligt med vatten');
+  assert.strictEqual(head('3 öl och ett glas vatten'), 'Drick 2 glas till för mer balans');
+  assert.strictEqual(head('2 öl och ett glas vatten'), 'Drick ett glas till för mer balans');
+  assert.strictEqual(water.amount(tot('2 öl och 3 glas vatten')), '3 glas');
+  // Alkoholfri öl räknas inte som alkohol
+  assert.strictEqual(tot('alkoholfri öl').alcoholG, 0);
+});
+
 test('kaffe räknas inte som vatten', () => {
   const now = Date.now();
   const tot = (q) => S.totals(Drinks.parse(q).map((x) => ({ ...x, t: now })));

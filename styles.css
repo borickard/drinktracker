@@ -139,7 +139,7 @@ h1 { font-size: 28px; font-weight: 650; letter-spacing: -0.02em; margin: 0; }
 }
 .name { font-size: 13px; color: var(--muted); }
 .amount { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
-.hint { font-size: 13px; }
+.hint { font-size: 13px; max-width: 190px; }
 .level-notice .hint, .info-headline.level-notice { color: var(--notice); }
 .level-over .hint, .info-headline.level-over { color: var(--over); }
 .level-good .hint, .info-headline.level-good { color: var(--good); }

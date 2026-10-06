@@ -20,7 +20,12 @@
   const fmt = (n, d = 0) => n.toLocaleString('sv-SE', { minimumFractionDigits: d, maximumFractionDigits: d });
   const clock = (t) => new Date(t).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
   const nextDay = (t) => new Date(t).toDateString() !== new Date().toDateString();
-  const isSoft = (e) => e.alcoholG < 1; // alkoholfri öl (< 1 g) räknas som alkoholfritt
+  const ETHANOL_DENSITY = 0.789;
+  // Alkoholfritt = högst 0,5 % alkohol, t.ex. alkoholfri öl.
+  const isSoft = (e) => e.alcoholG === 0 || (e.ml > 0 && e.alcoholG / ETHANOL_DENSITY / e.ml <= 0.0055);
+  const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  // Antal glas en alkoholfri dryck motsvarar: minst ett, en stor flaska blir flera.
+  const glassesOf = (e) => e.count * Math.max(1, Math.round(e.waterMl / WATER_GLASS_ML));
   // Räknas som vatten: alkoholfritt, men inte kaffe och espresso (små volymer).
   const hydrates = (e) => isSoft(e) && e.hydrates !== false;
   const glassWord = (n) => (n === 1 ? 'ett glas' : `${n} glas`);
@@ -39,7 +44,7 @@
 
   // Promille över tid. Förenklat: alkoholen räknas som upptagen direkt, nedbrytning 0,15 ‰/h.
   function promille(entries, body, at = Date.now()) {
-    const drinks = entries.filter((e) => e.alcoholG > 0).sort((a, b) => a.t - b.t);
+    const drinks = entries.filter((e) => !isSoft(e)).sort((a, b) => a.t - b.t);
     let bac = 0;
     let last = null;
     for (const e of drinks) {
@@ -56,7 +61,7 @@
     const body = bodyModel(profile);
     const t = { alcoholG: 0, caffeineMg: 0, sugarG: 0, softMl: 0, body };
     for (const e of entries) {
-      t.alcoholG += e.alcoholG * e.count;
+      if (!isSoft(e)) t.alcoholG += e.alcoholG * e.count;
       t.caffeineMg += e.caffeineMg * e.count;
       t.sugarG += e.sugarG * e.count;
       // Bara alkoholfria drycker räknas som vätska – alkoholen gör att kroppen gör sig av med mer.
@@ -65,12 +70,11 @@
     t.glasses = t.alcoholG / GLASS_G;
     t.kcal = t.alcoholG * KCAL_PER_G_ALCOHOL + t.sugarG * KCAL_PER_G_SUGAR;
     // Varva: ett glas vatten (eller annat alkoholfritt) per alkoholdryck – en flaska vin räknas som flera.
-    t.waterNeededGlasses = entries
+    t.alcoholDrinks = entries
       .filter((e) => !isSoft(e))
       .reduce((n, e) => n + e.count * Math.max(1, Math.round(e.alcoholG / GLASS_G)), 0);
-    t.waterNeededMl = t.waterNeededGlasses * WATER_GLASS_ML;
-    t.waterGlasses = Math.floor((t.softMl + 20) / WATER_GLASS_ML); // 20 ml marginal: 33 cl läsk = 1 glas
-    t.alternating = t.alcoholG > 0 && t.waterGlasses >= t.waterNeededGlasses;
+    t.waterGlasses = entries.filter(hydrates).reduce((n, e) => n + glassesOf(e), 0);
+    t.alternating = t.alcoholG > 0 && t.waterGlasses >= t.alcoholDrinks;
     t.lostMl = t.alcoholG * DIURESIS_ML_PER_G;
     t.bac = promille(entries, body);
     t.caffeineSleepOkAt = t.caffeineMg > 0 ? caffeineBelow(entries, CAFFEINE_SLEEP_OK_MG) : null;
@@ -114,38 +118,44 @@
   const SUBSTANCES = [
     {
       id: 'water', name: 'Vatten',
-      amount: (t) => (t.alcoholG > 0 ? `${t.waterGlasses} av ${t.waterNeededGlasses} glas` : `${fmt(t.softMl / 10)} cl`),
-      load: (t) => Math.max(t.softMl, t.waterNeededMl) / 1000,
+      amount: (t) => `${t.waterGlasses} glas`,
+      load: (t) => (Math.max(t.waterGlasses, t.alcoholDrinks) * WATER_GLASS_ML) / 1000,
       // Andel av lagret som är fyllt – resten visas som kontur (det som saknas för att varva).
-      fill: (t) => (t.waterNeededMl > 0 ? Math.min(1, t.softMl / Math.max(t.softMl, t.waterNeededMl)) : 1),
+      fill: (t) => (t.alcoholDrinks > 0 ? Math.min(1, t.waterGlasses / Math.max(t.waterGlasses, t.alcoholDrinks)) : 1),
       level(t) {
-        if (t.softMl === 0 && t.alcoholG === 0) return 'none';
+        if (t.waterGlasses === 0 && t.alcoholG === 0) return 'none';
         if (t.alcoholG === 0 || t.alternating) return 'good';
         return 'notice';
       },
       describe(t, entries) {
         const p = [];
         let headline;
+        let short;
         const g = fmt(t.glasses, 1);
+        const drinks = t.alcoholDrinks === 1 ? 'en alkoholdryck' : `${t.alcoholDrinks} alkoholdrycker`;
         if (t.alcoholG === 0) {
           headline = 'Bra vätskebalans';
-          p.push(`Du har druckit ungefär ${fmt(t.softMl / 10)} cl. Vätska hjälper koncentration och energi, och kroppen återhämtar sig lättare i natt.`);
+          p.push(`Du har druckit ${glassWord(t.waterGlasses)} vatten eller alkoholfritt. Vätska hjälper koncentration och energi, och kroppen återhämtar sig lättare i natt.`);
+        } else if (t.waterGlasses > t.alcoholDrinks) {
+          headline = 'Bra! Du dricker tillräckligt med vatten';
+          short = 'Bra! Tillräckligt med vatten';
+          p.push(`${capitalize(glassWord(t.waterGlasses))} vatten eller alkoholfritt mot ${drinks}. Att varva gör att du dricker långsammare och minskar vätskeförlusten – det minskar risken för huvudvärk och muntorrhet imorgon.`);
         } else if (t.alternating) {
-          headline = t.glasses >= OCCASION_LIMIT ? 'Hjälper – men inte fullt ut' : 'Du varvar med vatten';
-          p.push('Ett glas vatten eller annat alkoholfritt per glas alkohol gör att du dricker långsammare och minskar vätskeförlusten. Det minskar risken för huvudvärk och muntorrhet imorgon.');
-          if (t.glasses >= OCCASION_LIMIT) {
-            p.push(`Men vid ${g} standardglas påverkas sömn, återhämtning och mående imorgon ändå. Vatten gör dig inte nyktrare – det är bara tiden som bryter ned alkoholen.`);
-          } else {
-            p.push('Vatten gör dig däremot inte nyktrare och tar inte bort alkoholens effekt på sömnen.');
-          }
+          headline = 'Varannan vatten ✅';
+          p.push(`${capitalize(glassWord(t.waterGlasses))} vatten eller alkoholfritt mot ${drinks}. Att varva gör att du dricker långsammare och minskar vätskeförlusten – det minskar risken för huvudvärk och muntorrhet imorgon.`);
         } else {
-          const missing = t.waterNeededGlasses - t.waterGlasses;
-          headline = t.softMl === 0 ? 'Inget vatten än' : 'Varva med vatten';
-          p.push(`Du har druckit ${g} standardglas och ${glassWord(t.waterGlasses)} vatten eller alkoholfritt. Ett glas vatten per glas alkohol är en bra tumregel – du ligger ${glassWord(missing)} efter.`);
+          const missing = t.alcoholDrinks - t.waterGlasses;
+          headline = `Drick ${glassWord(missing)} till för mer balans`;
+          p.push(`${capitalize(glassWord(t.waterGlasses))} vatten eller alkoholfritt mot ${drinks}. Ett glas vatten per alkoholdryck – varannan vatten – är en bra tumregel.`);
           p.push(`Att varva gör att du dricker långsammare, och alkoholen driver ut ungefär ${fmt(t.lostMl / 10)} cl vätska ur kroppen. Det märks i måendet imorgon.`);
-          p.push('Öl, vin och drinkar räknas inte – alkoholen gör att kroppen gör sig av med mer vätska än den får. Kaffe räknas inte heller, eftersom det oftast är små volymer.');
         }
-        return { headline, paragraphs: p, from: contributors(entries.filter(hydrates), 'waterMl', 'cl', 0.1) };
+        if (t.alcoholG > 0 && t.alternating) {
+          p.push(t.glasses >= OCCASION_LIMIT
+            ? `Men vid ${g} standardglas påverkas sömn, återhämtning och mående imorgon ändå. Vatten gör dig inte nyktrare – det är bara tiden som bryter ned alkoholen.`
+            : 'Vatten gör dig däremot inte nyktrare och tar inte bort alkoholens effekt på sömnen.');
+        }
+        if (t.alcoholG > 0) p.push('Vatten, läsk, alkoholfri öl och annat alkoholfritt räknas – men inte kaffe, eftersom det oftast är små volymer. En stor flaska räknas som flera glas.');
+        return { headline, short, paragraphs: p, from: contributors(entries.filter(hydrates), 'waterMl', 'cl', 0.1) };
       },
     },
     {
@@ -309,8 +319,7 @@
     if (t.alcoholG > 0 && t.alternating && t.glasses >= OCCASION_LIMIT) s += ' Vattnet hjälper, men inte fullt ut vid den här mängden.';
     else if (t.alcoholG > 0 && t.alternating) s += ' Bra att du varvar med vatten.';
     else if (t.alcoholG > 0) {
-      const w = glassWord(t.waterNeededGlasses - t.waterGlasses);
-      s += ` ${w.charAt(0).toUpperCase() + w.slice(1)} vatten till hjälper.`;
+      s += ` ${capitalize(glassWord(t.alcoholDrinks - t.waterGlasses))} vatten till hjälper.`;
     }
     return s;
   }
