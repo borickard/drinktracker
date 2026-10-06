@@ -9,7 +9,11 @@
   <meta name="description" content="Håll koll på vad du dricker i kväll – och hur det påverkar sömn, mående och morgondagen.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="Dagen före">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -18,7 +22,7 @@
   <main class="app">
     <!-- Startvy: visas innan första drycken -->
     <section class="welcome" id="welcome" aria-labelledby="welcome-title">
-      <p class="brand reveal" style="--d:0">Dagen före</p>
+      <p class="brand reveal" style="--d:0"><span class="logo" aria-label="Dagen före"><span class="mark" aria-hidden="true"><span class="g"></span><b></b><b></b><b></b><b></b></span><span class="word" aria-hidden="true"><span>Dagen</span><span class="layered">före</span></span></span></p>
 
       <div class="hero-art reveal" style="--d:1" aria-hidden="true">
         <div class="demo-glass">
@@ -59,7 +63,7 @@
     <!-- Kvällen -->
     <div class="tracker" id="tracker">
       <header class="top">
-        <h1>Dagen före</h1>
+        <h1 class="top-logo"><span class="logo" aria-label="Dagen före"><span class="mark" aria-hidden="true"><span class="g"></span><b></b><b></b><b></b><b></b></span><span class="word" aria-hidden="true"><span>Dagen</span><span class="layered">före</span></span></span></h1>
         <button class="link" id="reset" hidden>Börja om</button>
       </header>
 

@@ -49,7 +49,9 @@ npm test
 - `js/drinks.js` – dryckesdatabas (~85 drycker, drinkar och alkoholfria alternativ) och fritexttolkning
 - `js/substances.js` – gränsvärden, texter om effekter, prognos för imorgon
 - `js/app.js` – gränssnittet
-- `styles.css` – ljust och mörkt tema
+- `styles.css` – ljust och mörkt tema, logotypen (glasmärket + Bricolage Grotesque)
+- `icon.svg`, `icon-*.png`, `apple-touch-icon.png`, `manifest.webmanifest` – favicon och hemskärmsikon
+- `logo-forslag.html`, `logo-forslag-2.html` – logoförslagen som togs fram
 
 ## Idéer framåt
 
