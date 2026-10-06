@@ -322,7 +322,7 @@
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'chip';
-    b.innerHTML = `${window.Icons.ICONS[id] || ''}<span>${d.name}</span>`;
+    b.innerHTML = `${window.Icons.ICONS[id] || ''}<span>${d.name}</span><small>${d.size.split(' · ')[0]}</small>`;
     b.addEventListener('click', () => add([window.Drinks.fromQuick(id)]));
     $('starter').appendChild(b);
   }

@@ -7,7 +7,7 @@ const names = (text) => Drinks.parse(text).map((x) => [x.name, x.count]);
 
 test('tolkar exemplet från idén', () => {
   assert.deepStrictEqual(names('en öl, en espresso martini, en cola zero och två glas ramlösa'),
-    [['Öl', 1], ['Espresso Martini', 1], ['Cola zero', 1], ['Vatten', 2]]);
+    [['Flasköl', 1], ['Espresso Martini', 1], ['Cola zero', 1], ['Vatten', 2]]);
 });
 
 test('längsta namnet vinner', () => {
@@ -16,7 +16,7 @@ test('längsta namnet vinner', () => {
 });
 
 test('drinknamn med "och" delas inte upp', () => {
-  assert.deepStrictEqual(names('gin och tonic och en öl'), [['Gin & tonic', 1], ['Öl', 1]]);
+  assert.deepStrictEqual(names('gin och tonic och en öl'), [['Gin & tonic', 1], ['Flasköl', 1]]);
 });
 
 test('volym, procent och flaska', () => {
