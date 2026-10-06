@@ -1,6 +1,6 @@
-# Ikväll
+# Dagen före
 
-En avskalad webbapp för att hålla koll på vad du dricker under kvällen. Ämnena **staplas som lager i ett glas**: vätska, alkohol, koffein och socker. Tryck på ett lager för att läsa vad mängden gör i kroppen.
+Dagen före – en avskalad webbapp för att hålla koll på vad du dricker under kvällen. Ämnena **staplas som lager i ett glas**: vätska, alkohol, koffein och socker. Tryck på ett lager för att läsa vad mängden gör i kroppen.
 
 ## Så funkar det
 

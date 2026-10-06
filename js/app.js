@@ -454,7 +454,7 @@
   });
 
   $('reset').addEventListener('click', () => {
-    if (!confirm('Börja en ny kväll? Dagens drycker rensas.')) return;
+    if (!confirm('Börja om? Alla drycker du lagt till rensas.')) return;
     entries = [];
     startAt = null;
     save();
