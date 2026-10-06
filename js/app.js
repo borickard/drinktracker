@@ -248,14 +248,62 @@
   function openSheet(id) {
     const el = $(id);
     el.hidden = false;
+    el.querySelector('.sheet-panel').scrollTop = 0;
+    document.body.classList.add('sheet-open');
+    $('toast').hidden = true;
     requestAnimationFrame(() => el.classList.add('open'));
   }
   function closeSheets() {
+    document.body.classList.remove('sheet-open');
     document.querySelectorAll('.sheet.open').forEach((el) => {
       el.classList.remove('open');
+      const panel = el.querySelector('.sheet-panel');
+      panel.classList.remove('dragging');
+      panel.style.transform = '';
       setTimeout(() => { el.hidden = true; }, 220);
     });
   }
+
+  // Svep nedåt för att stänga – från huvudet, eller var som helst när panelen är scrollad högst upp.
+  document.querySelectorAll('.sheet-panel').forEach((panel) => {
+    let startY = null;
+    let dy = 0;
+    let fromBar = false;
+    const start = (y, target) => {
+      fromBar = !!target.closest('.sheet-bar') && !target.closest('.sheet-close');
+      if (!fromBar && panel.scrollTop > 0) return;
+      startY = y;
+      dy = 0;
+    };
+    const move = (y, ev) => {
+      if (startY == null) return;
+      dy = y - startY;
+      if (dy <= 0) { if (!fromBar) startY = null; panel.style.transform = ''; return; }
+      if (ev.cancelable) ev.preventDefault();
+      panel.classList.add('dragging');
+      panel.style.transform = `translateY(${dy}px)`;
+    };
+    const end = () => {
+      if (startY == null) return;
+      startY = null;
+      panel.classList.remove('dragging');
+      if (dy > 90) closeSheets();
+      else panel.style.transform = '';
+    };
+    panel.addEventListener('touchstart', (e) => start(e.touches[0].clientY, e.target), { passive: true });
+    panel.addEventListener('touchmove', (e) => move(e.touches[0].clientY, e), { passive: false });
+    panel.addEventListener('touchend', end);
+    panel.addEventListener('touchcancel', end);
+    // Mus: dra i huvudet
+    const bar = panel.querySelector('.sheet-bar');
+    bar.addEventListener('mousedown', (e) => {
+      start(e.clientY, e.target);
+      const mm = (ev) => move(ev.clientY, ev);
+      const mu = () => { end(); window.removeEventListener('mousemove', mm); window.removeEventListener('mouseup', mu); };
+      window.addEventListener('mousemove', mm);
+      window.addEventListener('mouseup', mu);
+    });
+  });
   document.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeSheets));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSheets(); });
 

@@ -94,7 +94,7 @@
   <div class="sheet" id="add-sheet" hidden>
     <div class="sheet-backdrop" data-close></div>
     <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="add-title">
-      <div class="grip" data-close></div>
+      <div class="sheet-bar"><span class="grip" aria-hidden="true"></span><button type="button" class="sheet-close" data-close aria-label="Stäng">×</button></div>
       <h2 id="add-title">Lägg till</h2>
       <form id="free-form" autocomplete="off">
         <input id="free" type="text" placeholder="t.ex. espresso martini, två glas vatten" enterkeyhint="done">
@@ -109,7 +109,7 @@
   <div class="sheet" id="info-sheet" hidden>
     <div class="sheet-backdrop" data-close></div>
     <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="info-title">
-      <div class="grip" data-close></div>
+      <div class="sheet-bar"><span class="grip" aria-hidden="true"></span><button type="button" class="sheet-close" data-close aria-label="Stäng">×</button></div>
       <div class="info-head">
         <span class="dot" id="info-dot"></span>
         <h2 id="info-title"></h2>
@@ -136,7 +136,7 @@
   <div class="sheet" id="profile-sheet" hidden>
     <div class="sheet-backdrop" data-close></div>
     <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title">
-      <div class="grip" data-close></div>
+      <div class="sheet-bar"><span class="grip" aria-hidden="true"></span><button type="button" class="sheet-close" data-close aria-label="Stäng">×</button></div>
       <h2 id="profile-title">Din profil</h2>
       <p class="lead">Med vikt, längd och kön kan appen uppskatta din promille och hur länge alkoholen finns kvar i kroppen.</p>
       <form id="profile-form" autocomplete="off">
