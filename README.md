@@ -4,7 +4,7 @@ En avskalad webbapp för att hålla koll på vad du dricker under kvällen. Ämn
 
 ## Så funkar det
 
-- **Startvy:** innan första drycken möts man av ett animerat glas som fylls lager för lager, rubriken *Vad dricker du i kväll?*, en tydlig knapp *Lägg till en dryck* och snabbstartsknappar (öl, vin, vatten, cola zero, kaffe, alkoholfri öl) som lägger till med en tryckning. Därefter tonar glasvyn in.
+- **Startvy:** innan första drycken möts man av ett animerat glas som fylls lager för lager, rubriken *Vad dricker du i kväll?*, en tydlig knapp *Lägg till en dryck* och snabbstartsknappar (vatten och alkoholfri öl först, sedan öl, vin, cola zero och kaffe) som lägger till med en tryckning. Därefter tonar glasvyn in.
 - **Animationer:** dryckens symbol faller ned i glaset, lagren växer och studsar till när de ändras, snabbvalen dyker upp ett i taget. Allt stängs av vid *reducerad rörelse* i systemet.
 
 - **Lägg till** med snabbval (med symboler: öl, vin, bubbel, sprit, alkoholfri öl, cola och läsk – med respektive utan koffein –, kaffe, vatten …) eller fritext, t.ex.

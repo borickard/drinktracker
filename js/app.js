@@ -269,7 +269,7 @@
   $('welcome-profile').addEventListener('click', () => openProfile());
 
   // Snabbstart på startsidan: en tryckning lägger till direkt.
-  for (const id of ['ol', 'vin', 'vatten', 'cola-zero', 'kaffe', 'alkoholfri-ol']) {
+  for (const id of ['vatten', 'alkoholfri-ol', 'ol', 'vin', 'cola-zero', 'kaffe']) {
     const d = window.Drinks.DRINKS.find((x) => x.id === id);
     const b = document.createElement('button');
     b.type = 'button';

@@ -11,6 +11,11 @@
   // hydrates: false = räknas inte som vatten (t.ex. kaffe – små volymer).
   const DRINKS = [
     // --- Standarddrycker (snabbval) ---
+    // Vatten och alkoholfritt först – en påminnelse, och det som sällan lyfts fram.
+    { id: 'vatten', name: 'Vatten', size: '25 cl', ml: 250, quick: true,
+      aliases: ['vatten', 'glas vatten', 'kranvatten', 'mineralvatten', 'kolsyrat vatten', 'ramlösa', 'loka', 'bonaqua', 'imsdal', 'san pellegrino', 'pellegrino', 'evian', 'sodavatten', 'soda'] },
+    { id: 'alkoholfri-ol', name: 'Alkoholfri öl', size: '33 cl · 0,5 %', ml: 330, abv: 0.5, sugar: 5, quick: true,
+      aliases: ['alkoholfri öl', 'alkoholfri', 'lättöl', 'noll procent'] },
     { id: 'ol', name: 'Öl', size: '33 cl · 5 %', ml: 330, abv: 5, sugar: 0, quick: true,
       aliases: ['öl', 'öl', 'bärs', 'lager', 'pilsner', 'pils', 'ipa', 'apa', 'ale', 'stout', 'porter', 'veteöl', 'ljus lager', 'flaska öl', 'burk öl'] },
     { id: 'stor-stark', name: 'Stor stark', size: '40 cl · 5,3 %', ml: 400, abv: 5.3, sugar: 0, quick: true,
@@ -23,8 +28,6 @@
       aliases: ['sprit', 'shot', 'shots', 'snaps', 'nubbe', 'vodka', 'gin', 'rom', 'whisky', 'whiskey', 'tequila', 'konjak', 'cognac', 'brandy', 'calvados', 'akvavit', 'mezcal', 'bourbon', 'grogg'] },
     { id: 'cider', name: 'Cider', size: '33 cl · 4,5 %', ml: 330, abv: 4.5, sugar: 30, quick: true,
       aliases: ['cider', 'päroncider', 'äppelcider', 'somersby', 'briska', 'kopparberg', 'rekorderlig'] },
-    { id: 'alkoholfri-ol', name: 'Alkoholfri öl', size: '33 cl · 0,5 %', ml: 330, abv: 0.5, sugar: 5, quick: true,
-      aliases: ['alkoholfri öl', 'alkoholfri', 'lättöl', 'noll procent'] },
     { id: 'cola', name: 'Cola', size: '33 cl · koffein', ml: 330, sugar: 35, caf: 32, quick: true,
       aliases: ['cola', 'coca cola', 'coke', 'pepsi', 'dr pepper'] },
     { id: 'cola-zero', name: 'Cola zero', size: '33 cl · koffein', ml: 330, sugar: 0, caf: 32, quick: true,
@@ -39,8 +42,6 @@
       aliases: ['espresso', 'espressos', 'espresson', 'dubbel espresso'] },
     { id: 'energi', name: 'Energidryck', size: '25 cl', ml: 250, caf: 80, sugar: 27, quick: true,
       aliases: ['energidryck', 'energi dryck', 'red bull', 'redbull', 'monster', 'nocco', 'celsius', 'battery'] },
-    { id: 'vatten', name: 'Vatten', size: '25 cl', ml: 250, quick: true,
-      aliases: ['vatten', 'glas vatten', 'kranvatten', 'mineralvatten', 'kolsyrat vatten', 'ramlösa', 'loka', 'bonaqua', 'imsdal', 'san pellegrino', 'pellegrino', 'evian', 'sodavatten', 'soda'] },
 
     // --- Läsk & alkoholfritt ---
     { id: 'pepsi-max', name: 'Pepsi Max', size: '33 cl', ml: 330, caf: 43, aliases: ['pepsi max', 'pepsimax'] },
