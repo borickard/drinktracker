@@ -65,6 +65,15 @@ test('en öl räknas inte som vätska – varva med vatten', () => {
   assert.match(S.tomorrow(heavy), /inte fullt ut/);
 });
 
+test('kaffe räknas inte som vatten', () => {
+  const now = Date.now();
+  const tot = (q) => S.totals(Drinks.parse(q).map((x) => ({ ...x, t: now })));
+  assert.strictEqual(tot('två kaffe och en espresso').softMl, 0);
+  assert.ok(tot('två kaffe och en espresso').caffeineMg > 200);
+  assert.strictEqual(S.SUBSTANCES.find((s) => s.id === 'water').level(tot('en öl och en kaffe')), 'notice');
+  assert.ok(tot('ett te').softMl > 0);
+});
+
 test('profilen påverkar promille men inte gränsen', () => {
   const now = Date.now();
   const e = Drinks.parse('3 öl').map((x) => ({ ...x, t: now }));

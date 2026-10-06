@@ -8,6 +8,7 @@
 
   // ml = total volym, abv = alkoholhalt i %, alc = gram alkohol (för drinkar med flera spritsorter),
   // caf = mg koffein, sugar = g socker. quick = visas som snabbval.
+  // hydrates: false = räknas inte som vatten (t.ex. kaffe – små volymer).
   const DRINKS = [
     // --- Standarddrycker (snabbval) ---
     { id: 'ol', name: 'Öl', size: '33 cl · 5 %', ml: 330, abv: 5, sugar: 0, quick: true,
@@ -32,9 +33,9 @@
       aliases: ['läsk', 'fanta', 'sprite', '7up', 'seven up', 'sockerdricka', 'zingo', 'apotekarnes', 'julmust', 'påskmust', 'must', 'loranga', 'champis'] },
     { id: 'lask-zero', name: 'Läsk zero', size: '33 cl · koffeinfri', ml: 330, sugar: 0, quick: true,
       aliases: ['läsk zero', 'sockerfri läsk', 'fanta zero', 'sprite zero', '7up free', 'zero', 'light'] },
-    { id: 'kaffe', name: 'Kaffe', size: '2 dl', ml: 200, caf: 100, quick: true,
+    { id: 'kaffe', name: 'Kaffe', size: '2 dl', ml: 200, caf: 100, quick: true, hydrates: false,
       aliases: ['kaffe', 'kopp kaffe', 'bryggkaffe', 'kaffen', 'americano', 'latte', 'cappuccino', 'flat white', 'cortado'] },
-    { id: 'espresso', name: 'Espresso', size: '3 cl', ml: 30, caf: 63, quick: true,
+    { id: 'espresso', name: 'Espresso', size: '3 cl', ml: 30, caf: 63, quick: true, hydrates: false,
       aliases: ['espresso', 'espressos', 'espresson', 'dubbel espresso'] },
     { id: 'energi', name: 'Energidryck', size: '25 cl', ml: 250, caf: 80, sugar: 27, quick: true,
       aliases: ['energidryck', 'energi dryck', 'red bull', 'redbull', 'monster', 'nocco', 'celsius', 'battery'] },
@@ -108,6 +109,7 @@
       caffeineMg: (d.caf || 0) * factor,
       sugarG: (d.sugar || 0) * factor,
       waterMl: Math.max(0, ml - alc / ETHANOL_DENSITY),
+      hydrates: d.hydrates !== false,
     };
   }
 
@@ -202,7 +204,7 @@
       // Ihopsatt drink, t.ex. "vodka sprite": summera ingredienserna.
       n = parts.map((d) => nutrients(d)).reduce((a, b) => ({
         ml: a.ml + b.ml, alcoholG: a.alcoholG + b.alcoholG, caffeineMg: a.caffeineMg + b.caffeineMg,
-        sugarG: a.sugarG + b.sugarG, waterMl: a.waterMl + b.waterMl,
+        sugarG: a.sugarG + b.sugarG, waterMl: a.waterMl + b.waterMl, hydrates: a.hydrates || b.hydrates,
       }));
       name = capitalize(raw.trim().replace(/^\s*(\d+|en|ett|två|tre|fyra|fem)\s+/i, ''));
     }

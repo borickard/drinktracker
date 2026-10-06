@@ -19,6 +19,8 @@
   const clock = (t) => new Date(t).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
   const nextDay = (t) => new Date(t).toDateString() !== new Date().toDateString();
   const isSoft = (e) => e.alcoholG < 1; // alkoholfri öl (< 1 g) räknas som alkoholfritt
+  // Räknas som vatten: alkoholfritt, men inte kaffe och espresso (små volymer).
+  const hydrates = (e) => isSoft(e) && e.hydrates !== false;
   const glassWord = (n) => (n === 1 ? 'ett glas' : `${n} glas`);
 
   // ---------- Kroppen ----------
@@ -56,7 +58,7 @@
       t.caffeineMg += e.caffeineMg * e.count;
       t.sugarG += e.sugarG * e.count;
       // Bara alkoholfria drycker räknas som vätska – alkoholen gör att kroppen gör sig av med mer.
-      if (isSoft(e)) t.softMl += e.waterMl * e.count;
+      if (hydrates(e)) t.softMl += e.waterMl * e.count;
     }
     t.glasses = t.alcoholG / GLASS_G;
     t.kcal = t.alcoholG * KCAL_PER_G_ALCOHOL + t.sugarG * KCAL_PER_G_SUGAR;
@@ -127,9 +129,9 @@
           headline = t.softMl === 0 ? 'Inget vatten än' : 'Varva med vatten';
           p.push(`Du har druckit ${g} standardglas och ${glassWord(t.waterGlasses)} vatten eller alkoholfritt. Ett glas vatten per glas alkohol är en bra tumregel – du ligger ${glassWord(missing)} efter.`);
           p.push(`Att varva gör att du dricker långsammare, och alkoholen driver ut ungefär ${fmt(t.lostMl / 10)} cl vätska ur kroppen. Det märks i måendet imorgon.`);
-          p.push('Öl, vin och drinkar räknas inte – alkoholen gör att kroppen gör sig av med mer vätska än den får.');
+          p.push('Öl, vin och drinkar räknas inte – alkoholen gör att kroppen gör sig av med mer vätska än den får. Kaffe räknas inte heller, eftersom det oftast är små volymer.');
         }
-        return { headline, paragraphs: p, from: contributors(entries.filter(isSoft), 'waterMl', 'cl', 0.1) };
+        return { headline, paragraphs: p, from: contributors(entries.filter(hydrates), 'waterMl', 'cl', 0.1) };
       },
     },
     {
