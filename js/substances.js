@@ -142,7 +142,9 @@
     if (bac < 1.0) return 'Från 0,5 promille släpper hämningarna och man blir upprymd, men omdömet försämras och det blir svårare att ta in information.';
     if (bac < 1.5) return 'Runt 1 promille blir talet sluddrigt, koordinationen sämre och det blir svårare att gå och att kontrollera känslor.';
     if (bac < 2.0) return 'Runt 1,5 promille kommer illamående och balansproblem, och risken för alkoholrelaterade skador ökar.';
-    return 'Runt 2 promille kommer minnesluckor och förvirring, och det finns risk för medvetslöshet och alkoholförgiftning.';
+    if (bac < 3.0) return 'Runt 2 promille kommer minnesluckor och förvirring, och det finns risk för medvetslöshet och alkoholförgiftning.';
+    if (bac < 4.0) return 'Runt 3 promille är risken stor att bli medvetslös, och andningen kan påverkas. Det är ett tillstånd som kräver vård.';
+    return 'Runt 4 promille och mer kan andning och hjärta påverkas så mycket att det är livshotande. Ring 112.';
   }
 
   // Varje ämne: load = andel av referensnivån (1 = gränsen nås).
@@ -223,13 +225,21 @@
           p.push('Sömnen blir märkbart sämre, och risken ökar för bakfylla imorgon – huvudvärk, illamående, trötthet och ångest.');
         } else if (t.glasses < 7) {
           headline = 'Risken för skador ökar';
-          p.push(`${g} standardglas. Omdöme, balans och koordination påverkas tydligt, och risken ökar för olyckor, bråk och skador – och för att göra saker man ångrar.`);
+          p.push(`${g} standardglas. Omdöme, balans och koordination påverkas tydligt, och risken ökar för fallolyckor, bråk och andra skador – och för att göra saker man ångrar.`);
           p.push('Bakfyllan imorgon blir ofta påtaglig. Byt till vatten eller alkoholfritt resten av kvällen.');
+        } else if (t.glasses < 10) {
+          headline = 'Risk för minnesluckor';
+          p.push(`${g} standardglas. I den här mängden är det vanligt med minnesluckor, kraftigt illamående och kräkningar. Risken för olyckor och för att bli utsatt för eller utsätta andra för något är hög.`);
+          p.push('Sluta dricka alkohol nu, drick vatten och se till att du har sällskap hem. Imorgon blir återhämtningen tung – ofta mer än en dag.');
+        } else if (t.glasses < 14) {
+          headline = 'Risk för alkoholförgiftning';
+          p.push(`${g} standardglas. Det är mer än kroppen hinner bryta ned, och promillen kan fortsätta stiga en stund efter sista glaset. Det finns risk för alkoholförgiftning: förvirring, kräkningar och att bli svår att väcka.`);
+          p.push('Sluta dricka alkohol helt och var inte ensam. Somna inte på rygg – kräks man i sömnen kan man få det i luftvägarna.');
         } else {
-          headline = 'Risk för minnesluckor och förgiftning';
-          short = 'Risk för minnesluckor';
-          p.push(`${g} standardglas. I den här mängden finns risk för minnesluckor, kraftigt illamående och alkoholförgiftning.`);
-          p.push('Sluta dricka alkohol, drick vatten och se till att inte vara ensam. Om någon inte går att väcka eller andas oregelbundet – ring 112.');
+          headline = 'Livshotande mängd';
+          short = 'Livshotande mängd';
+          p.push(`${g} standardglas. Så här mycket alkohol kan påverka andningen och hjärtat och vara livshotande, även för den som är van att dricka.`);
+          p.push('Sluta dricka och se till att någon är med dig. Ring 112 om någon inte går att väcka, andas långsamt eller oregelbundet, är kall och blek eller får kramper. Lägg personen i stabilt sidoläge och lämna hen inte ensam.');
         }
         if (t.bac >= 0.05) p.push(`Uppskattad promille just nu: ${fmt(t.bac, 1)} ‰. ${promilleText(t.bac)}`);
         if (t.soberAt > Date.now() + 5 * 60e3) {
@@ -237,6 +247,10 @@
         }
         if (overRisk(t)) p.push('Även när alkoholen är ute kan förmågan att köra bil vara nedsatt dagen efter – i studier med upp till 20 procent.');
         p.push(`Kvällens alkohol${t.sugarG >= 1 ? ' och socker' : ''} motsvarar ungefär ${fmt(Math.round(t.kcal / 10) * 10)} kcal.`);
+        // Långsiktiga risker – efter det som gäller just nu.
+        if (t.glasses >= 5) {
+          p.push('Om det här blir ett mönster: att ofta dricka så här mycket ökar risken för leverskador (fettlever, leverinflammation och skrumplever), högt blodtryck och hjärtsjukdom, flera cancerformer, depression och ångest – och för att utveckla ett beroende.');
+        }
         if (!t.body.personal) p.push('Ange vikt, längd och kön i din profil för en uppskattning som passar dig.');
         return { headline, short, paragraphs: p, tips: alcoholTips(t, entries), guidance: true,
           from: contributors(entries, 'alcoholG', 'standardglas', 1 / GLASS_G, 1) };
@@ -317,6 +331,20 @@
   function alcoholTips(t, entries) {
     const has = (...ids) => entries.some((e) => e.matched && e.matched.some((m) => ids.includes(m)));
     const tips = [];
+    if (t.glasses >= 10) {
+      return [
+        'Sluta dricka alkohol nu – byt till vatten.',
+        'Se till att någon du litar på är med dig och att du kommer hem säkert.',
+        'Är någon svår att väcka eller andas konstigt: ring 112 och lägg personen i stabilt sidoläge.',
+      ];
+    }
+    if (t.glasses >= 7) {
+      return [
+        'Sluta dricka alkohol för i kväll och se till att du har sällskap hem.',
+        'Drick ett par glas vatten innan du lägger dig.',
+        'Ät något – och lägg dig gärna på sidan när du sover.',
+      ];
+    }
     if (!t.alternating) tips.push('Varva: ett glas vatten eller något alkoholfritt per glas alkohol.');
     if (t.glasses >= 2 && !overRisk(t)) tips.push('Bestäm i förväg var kvällen slutar – mer än 3 standardglas innebär en risk.');
     if (overRisk(t)) tips.push('Byt till alkoholfritt resten av kvällen – det märks imorgon.');
@@ -365,7 +393,8 @@
     // Att varva hjälper, men tar aldrig bort hela effekten av mycket alkohol.
     if (t.alcoholG > 0) score += t.alternating ? 0.5 : -0.5;
     const feel = score >= 0 ? 'pigg' : score >= -1 ? 'ganska pigg' : score >= -2 ? 'lite seg' : 'seg';
-    let s = overRisk(t) ? `Imorgon: ${feel}, med risk för bakfylla.` : `Imorgon: ${feel}.`;
+    let s = t.glasses >= 7 ? 'Imorgon: risk för kraftig bakfylla – återhämtningen kan ta mer än en dag.'
+      : overRisk(t) ? `Imorgon: ${feel}, med risk för bakfylla.` : `Imorgon: ${feel}.`;
     if (why.length) s += ` Sömnen påverkas av ${why.join(why.length > 2 ? ', ' : ' och ').replace(/, ([^,]*)$/, ' och $1')}.`;
     if (t.alcoholG > 0 && t.alternating && overRisk(t)) s += ' Vattnet hjälper, men inte fullt ut vid den här mängden.';
     else if (t.alcoholG > 0 && t.alternating) s += ' Bra att du varvar med vatten.';

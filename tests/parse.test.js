@@ -89,7 +89,9 @@ test('alkoholnivåer trappas upp efter 3 standardglas', () => {
   assert.deepStrictEqual(head('3 sprit'), ['notice', 'Påverkar sömnen']);
   assert.deepStrictEqual(head('4 sprit'), ['over', 'Mer än 3 standardglas innebär en risk']);
   assert.deepStrictEqual(head('5 sprit'), ['over', 'Risken för skador ökar']);
-  assert.deepStrictEqual(head('7 sprit'), ['over', 'Risk för minnesluckor och förgiftning']);
+  assert.deepStrictEqual(head('7 sprit'), ['over', 'Risk för minnesluckor']);
+  assert.deepStrictEqual(head('10 sprit'), ['over', 'Risk för alkoholförgiftning']);
+  assert.deepStrictEqual(head('15 sprit'), ['over', 'Livshotande mängd']);
 });
 
 test('kaffe räknas inte som vatten', () => {
