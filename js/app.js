@@ -213,14 +213,29 @@
       dx = r.left + r.width / 2 - cx;
       dy = surface - cy;
     }
+    // En gemensam tidslinje för symbol, platta och namn – med en egen kurva per fas.
+    const D = 1600;
+    const pop = 'cubic-bezier(.2, .9, .25, 1.15)'; // in med en liten studs
+    const hold = 'ease-in-out';
+    const fly = 'cubic-bezier(.55, 0, .3, 1)'; // mjuk acceleration ned i glaset
     el.animate([
-      { transform: 'translate(0, 16px) scale(.3) rotate(-14deg)', opacity: 0 },
-      { transform: 'translate(0, 0) scale(1.12) rotate(4deg)', opacity: 1, offset: 0.16 },
-      { transform: 'translate(0, 0) scale(1) rotate(0deg)', opacity: 1, offset: 0.26 },
-      { transform: 'translate(0, -6px) scale(1) rotate(0deg)', opacity: 1, offset: 0.55 },
-      { transform: `translate(${dx}px, ${dy}px) scale(.32) rotate(8deg)`, opacity: 1, offset: 0.9 },
-      { transform: `translate(${dx}px, ${dy + 16}px) scale(.12)`, opacity: 0 },
-    ], { duration: 1700, easing: 'cubic-bezier(.4,0,.2,1)' }).onfinish = () => el.remove();
+      { transform: 'translate3d(0, 24px, 0) scale(.5)', opacity: 0, easing: pop },
+      { transform: 'translate3d(0, 0, 0) scale(1)', opacity: 1, offset: 0.22, easing: hold },
+      { transform: 'translate3d(0, -4px, 0) scale(1)', opacity: 1, offset: 0.5, easing: fly },
+      { transform: `translate3d(${dx}px, ${dy}px, 0) scale(.28)`, opacity: 0.95, offset: 0.92, easing: 'ease-out' },
+      { transform: `translate3d(${dx}px, ${dy + 10}px, 0) scale(.2)`, opacity: 0 },
+    ], { duration: D, fill: 'both' }).onfinish = () => el.remove();
+    el.querySelector('.drop-ring').animate([
+      { opacity: 1 }, { opacity: 1, offset: 0.5 }, { opacity: 0, offset: 0.78 }, { opacity: 0 },
+    ], { duration: D, fill: 'both', easing: 'ease-in-out' });
+    el.querySelector('.drop-name').animate([
+      { opacity: 0, transform: 'translate(-50%, 6px)' },
+      { opacity: 0, transform: 'translate(-50%, 6px)', offset: 0.12 },
+      { opacity: 1, transform: 'translate(-50%, 0)', offset: 0.28 },
+      { opacity: 1, transform: 'translate(-50%, 0)', offset: 0.48 },
+      { opacity: 0, transform: 'translate(-50%, 0)', offset: 0.6 },
+      { opacity: 0, transform: 'translate(-50%, 0)' },
+    ], { duration: D, fill: 'both', easing: 'ease-in-out' });
   }
 
   // ---------- Lägg till ----------
@@ -437,7 +452,7 @@
   $('welcome-profile').addEventListener('click', () => openProfile());
 
   // Snabbstart på startsidan: en tryckning lägger till direkt.
-  for (const id of ['vatten', 'alkoholfri-ol', 'ol', 'vin', 'cola-zero', 'kaffe']) {
+  for (const id of ['vatten', 'alkoholfri-ol', 'ol', 'stor-stark', 'vin', 'cola-zero', 'kaffe']) {
     const d = window.Drinks.DRINKS.find((x) => x.id === id);
     const b = document.createElement('button');
     b.type = 'button';

@@ -4,7 +4,7 @@ Dagen före – en avskalad webbapp för att hålla koll på vad du dricker unde
 
 ## Så funkar det
 
-- **Startvy:** innan första drycken möts man av ett animerat glas som fylls lager för lager, rubriken *Vad dricker du i kväll?*, en tydlig knapp *Lägg till en dryck* och snabbstartsknappar (vatten och alkoholfri öl först, sedan flasköl, vin, cola zero och kaffe – med volym) som lägger till med en tryckning. Därefter tonar glasvyn in.
+- **Startvy:** innan första drycken möts man av ett animerat glas som fylls lager för lager, rubriken *Vad dricker du i kväll?*, en tydlig knapp *Lägg till en dryck* och snabbstartsknappar (vatten och alkoholfri öl först, sedan flasköl, stor stark, vin, cola zero och kaffe – med volym) som lägger till med en tryckning. Därefter tonar glasvyn in.
 - **Animationer:** varje lager har en egen effekt – alkoholen bubblar och har skum, vattnet har kondens som rinner, koffeinet ångar och sockret gnistrar (även i demoglaset). Dryckens symbol faller ned i glaset, lagren växer och studsar till när de ändras, snabbvalen dyker upp ett i taget. Allt stängs av vid *reducerad rörelse* i systemet.
 
 - **En till:** varje dryck i listan har en "+"-knapp som lägger till en till av samma sort direkt.
