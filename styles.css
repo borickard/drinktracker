@@ -198,7 +198,7 @@ h1 { font-size: 28px; font-weight: 650; letter-spacing: -0.02em; margin: 0; }
 .log ol { list-style: none; margin: 24px 0 0; padding: 0; border-top: 1px solid var(--line); }
 .log li {
   display: grid;
-  grid-template-columns: 40px 26px 1fr auto 28px;
+  grid-template-columns: 40px 26px 1fr auto 30px 26px;
   align-items: center;
   gap: 8px;
   padding: 12px 0;
@@ -216,6 +216,20 @@ h1 { font-size: 28px; font-weight: 650; letter-spacing: -0.02em; margin: 0; }
 .t-sugar { background: var(--sugar); }
 .icon { width: 26px; height: 26px; color: var(--muted); flex: none; }
 .remove { color: var(--muted); font-size: 20px; line-height: 1; height: 28px; }
+.again {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--chip);
+  color: var(--ink);
+  font-size: 18px; font-weight: 500; line-height: 1;
+  display: grid; place-items: center;
+  transition: transform .12s ease, background .2s ease;
+}
+.again:hover { background: var(--surface); }
+.again:active { transform: scale(.9); }
+.again.pulse { animation: again-pulse .45s cubic-bezier(.3,1.6,.5,1); }
+@keyframes again-pulse { 40% { transform: scale(1.18); background: var(--ink); color: var(--bg); } }
 
 /* ---------- Knappar ---------- */
 .disclaimer { margin: 28px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }

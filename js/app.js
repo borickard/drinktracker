@@ -153,8 +153,17 @@
       const li = document.createElement('li');
       const sub = e.raw && e.raw.toLowerCase() !== e.name.toLowerCase() ? `<span class="raw">${escapeHtml(e.raw)}</span>` : '';
       li.innerHTML = `<span class="time">${clock(e.t)}</span>${window.Icons.iconFor(e)}<span class="what">${e.count > 1 ? e.count + ' × ' : ''}${escapeHtml(e.name)}${sub}</span>
-        <span class="tags">${tags(e)}</span><button class="remove" aria-label="Ta bort">×</button>`;
+        <span class="tags">${tags(e)}</span>
+        <button class="again" aria-label="En ${escapeHtml(e.name.toLowerCase())} till">+</button>
+        <button class="remove" aria-label="Ta bort">×</button>`;
       li.querySelector('.remove').addEventListener('click', () => { entries = entries.filter((x) => x !== e); save(); render(); });
+      // En till av samma dryck – utan att öppna menyn.
+      li.querySelector('.again').addEventListener('click', (ev) => {
+        const { t: _t, spread: _s, ...rest } = e;
+        add([{ ...rest, count: 1, raw: e.name }]);
+        const btn = ev.currentTarget;
+        btn.classList.remove('pulse'); void btn.offsetWidth; btn.classList.add('pulse');
+      });
       log.appendChild(li);
     });
   }
