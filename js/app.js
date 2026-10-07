@@ -186,27 +186,41 @@
   }
 
   // Dryckessymbolen "faller" ned i glaset.
-  function drop(entry) {
+  // Dryckens symbol poppar upp stort mitt på skärmen och flyger sedan ned i glaset.
+  const DROP_SIZE = 112;
+  function drop(entry, i = 0) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const glass = $('glass');
-    const r = glass.getBoundingClientRect();
-    if (!r.width) return;
     const el = document.createElement('div');
     el.className = 'drop';
-    el.innerHTML = window.Icons.iconFor(entry);
-    el.style.left = r.left + r.width / 2 - 20 + 'px';
-    el.style.top = r.top + 6 + 'px';
+    el.innerHTML = `<span class="drop-ring"></span>${window.Icons.iconFor(entry)}<span class="drop-name">${escapeHtml(entry.name)}</span>`;
+    // Mitt på skärmen, lite förskjutet om flera läggs till samtidigt.
+    const cx = window.innerWidth / 2 + (i - 0) * 18;
+    const cy = window.innerHeight * 0.42 + i * 10;
+    el.style.left = cx - DROP_SIZE / 2 + 'px';
+    el.style.top = cy - DROP_SIZE / 2 + 'px';
     document.body.appendChild(el);
-    // Landa på ytan av det översta lagret (lagren växer fortfarande – mät efter höjdövergången).
-    const layers = glass.querySelectorAll('.layer');
-    const heights = [...layers].reduce((sum, l) => sum + parseFloat(l.style.height || 0) + 2, 0);
-    const target = Math.max(20, r.height - heights - 46);
+
+    // Mål: ytan av det översta lagret i glaset (om glaset syns), annars bara uppåt och bort.
+    const glass = $('glass');
+    const r = glass.getBoundingClientRect();
+    const visible = r.width && r.bottom > 0 && r.top < window.innerHeight;
+    let dx = 0;
+    let dy = -60;
+    if (visible) {
+      const layers = glass.querySelectorAll('.layer');
+      const filled = [...layers].reduce((sum, l) => sum + parseFloat(l.style.height || 0) + 2, 0);
+      const surface = Math.max(r.top + 24, r.bottom - filled - 10);
+      dx = r.left + r.width / 2 - cx;
+      dy = surface - cy;
+    }
     el.animate([
-      { transform: 'translateY(-10px) scale(.6) rotate(-12deg)', opacity: 0 },
-      { transform: 'translateY(6px) scale(1.05) rotate(0deg)', opacity: 1, offset: 0.2 },
-      { transform: `translateY(${target}px) scale(.85) rotate(6deg)`, opacity: 1, offset: 0.85 },
-      { transform: `translateY(${target + 14}px) scale(.4)`, opacity: 0 },
-    ], { duration: 800, easing: 'cubic-bezier(.45,0,.7,.3)' }).onfinish = () => el.remove();
+      { transform: 'translate(0, 16px) scale(.3) rotate(-14deg)', opacity: 0 },
+      { transform: 'translate(0, 0) scale(1.12) rotate(4deg)', opacity: 1, offset: 0.16 },
+      { transform: 'translate(0, 0) scale(1) rotate(0deg)', opacity: 1, offset: 0.26 },
+      { transform: 'translate(0, -6px) scale(1) rotate(0deg)', opacity: 1, offset: 0.55 },
+      { transform: `translate(${dx}px, ${dy}px) scale(.32) rotate(8deg)`, opacity: 1, offset: 0.9 },
+      { transform: `translate(${dx}px, ${dy + 16}px) scale(.12)`, opacity: 0 },
+    ], { duration: 1700, easing: 'cubic-bezier(.4,0,.2,1)' }).onfinish = () => el.remove();
   }
 
   // ---------- Lägg till ----------
@@ -218,7 +232,7 @@
     lastAdded = added;
     save();
     render();
-    setTimeout(() => added.slice(0, 3).forEach((e, i) => setTimeout(() => drop(e), i * 140)), 120);
+    setTimeout(() => added.slice(0, 3).forEach((e, i) => setTimeout(() => drop(e, i), i * 220)), 120);
     toast(added.length === 1 ? `${added[0].name} tillagd` : `${added.length} drycker tillagda`, true);
   }
 
