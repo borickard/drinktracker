@@ -23,7 +23,8 @@
   --blob-2: #cfe2f3;
   --blob-3: #f4cfdc;
   --chip: rgba(255,255,255,.72);
-  --steam: rgba(110, 88, 72, .34);
+  --steam: rgba(255, 255, 255, .95);
+  --steam-edge: rgba(140, 125, 110, .3);
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -51,7 +52,8 @@
     --blob-2: #1d3247;
     --blob-3: #43232f;
     --chip: rgba(255,255,255,.06);
-    --steam: rgba(255, 255, 255, .42);
+    --steam: rgba(255, 255, 255, .55);
+    --steam-edge: rgba(255, 255, 255, 0);
   }
 }
 
@@ -499,13 +501,14 @@ body:not(.is-empty) .backdrop-blobs span { opacity: .28; }
 .hero-art { position: relative; width: 260px; height: 230px; margin: 22px 0 6px; }
 .demo-glass {
   position: absolute;
+  /* overflow: visible – ångan ska kunna stiga upp ovanför glaset */
   left: 50%; bottom: 0;
   width: 112px; height: 210px;
   margin-left: -56px;
   border-radius: 14px 14px 30px 30px;
   background: var(--glass);
   box-shadow: 0 20px 40px -18px rgba(60,40,10,.25), inset 0 0 0 1px rgba(255,255,255,.4);
-  overflow: hidden;
+  overflow: visible;
   animation: float 6s ease-in-out infinite;
 }
 /* Innehållet: lagren staplas nerifrån. */
@@ -737,7 +740,7 @@ body:not(.is-empty) .backdrop-blobs span { opacity: .28; }
   pointer-events: none;
   container-type: size;
 }
-.fx-over { position: absolute; left: 0; right: 0; bottom: 40%; height: 0; pointer-events: none; z-index: 2; }
+.fx-over { position: absolute; left: 0; right: 0; bottom: calc(100% - 8px); height: 0; pointer-events: none; z-index: 2; }
 .fx i, .fx-over i { position: absolute; display: block; }
 .demo-layer { position: relative; }
 /* Vatten med underskott: dropparna bara där det finns vatten, inte i konturen ovanför */
@@ -816,8 +819,9 @@ body:not(.is-empty) .backdrop-blobs span { opacity: .28; }
   left: var(--x); bottom: 0;
   width: 22px; height: 44px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, var(--steam), transparent 70%);
-  filter: blur(4px);
+  /* Vit ånga med en svag kontur så att den syns även mot ljus bakgrund */
+  background: radial-gradient(ellipse at center, var(--steam) 0 30%, rgba(255,255,255,.55) 50%, var(--steam-edge) 64%, transparent 72%);
+  filter: blur(3px);
   opacity: 0;
   animation: fx-steam var(--dur) ease-out infinite;
   animation-delay: var(--t);
