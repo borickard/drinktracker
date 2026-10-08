@@ -66,7 +66,11 @@
       for (let i = 0; i < 6; i++) inner += `<i class="fx-drop" style="--x:${pct(8, 88)};--y:${pct(6, 50)};--s:${px(5, 8)}"></i>`;
       for (let i = 0; i < 3; i++) inner += `<i class="fx-drop run" style="--x:${pct(12, 84)};--y:${pct(4, 30)};--s:${px(6, 9)};--dur:${sec(5, 8)};--t:-${sec(0, 8)}"></i>`;
     } else if (id === 'caffeine') {
-      for (let i = 0; i < 4; i++) over += `<i class="fx-steam" style="--x:${pct(14, 70)};--dur:${sec(3.6, 5.2)};--t:-${sec(0, 5)}"></i>`;
+      // Ångstrimmor: slingrande banor som stiger, svajar och tonar ut.
+      const WISPS = ['M10 70 C3 58 17 46 10 34 S3 12 11 0', 'M10 70 C17 58 3 46 10 34 S17 12 9 0', 'M9 70 C15 60 4 50 9 38 S16 18 10 0'];
+      for (let i = 0; i < 3; i++) {
+        over += `<i class="fx-steam" style="--x:${pct(18 + i * 20, 26 + i * 20)};--dur:${sec(4.6, 6.2)};--t:-${sec(0, 6)}"><svg viewBox="0 0 20 70" aria-hidden="true"><path d="${WISPS[i]}"/></svg></i>`;
+      }
       inner += '<i class="fx-crema"></i>';
     } else if (id === 'sugar') {
       for (let i = 0; i < 9; i++) inner += `<i class="fx-spark" style="--x:${pct(6, 90)};--y:${pct(10, 85)};--s:${px(5, 10)};--dur:${sec(1.8, 3.2)};--t:-${sec(0, 3)}"></i>`;
