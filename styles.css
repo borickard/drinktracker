@@ -508,20 +508,32 @@ body:not(.is-empty) .backdrop-blobs span { opacity: .28; }
   overflow: hidden;
   animation: float 6s ease-in-out infinite;
 }
-/* Innehållet: lagren staplas nerifrån. I slutet av slingan töms glaset uppifrån
-   (som när man dricker ur det) i stället för att lagren pressas ihop. */
+/* Innehållet: lagren staplas nerifrån. */
 .demo-fill {
   position: absolute; inset: 4px;
   display: flex;
   flex-direction: column-reverse;
   gap: 2px;
-  border-radius: 10px 10px 26px 26px;
-  animation: drain 9s infinite both;
 }
-@keyframes drain {
-  0%, 84% { clip-path: inset(0 0 0 0 round 10px 10px 26px 26px); animation-timing-function: cubic-bezier(.45, 0, .55, 1); }
-  97%, 100% { clip-path: inset(100% 0 0 0 round 10px 10px 26px 26px); }
+/* I slutet av slingan sänks en yta i glasets färg uppifrån – det ser ut som att
+   nivån sjunker när man dricker. Lagren behåller sin form, och eftersom bara
+   transform animeras blir det mjukt i alla webbläsare. */
+.demo-empty {
+  position: absolute; inset: 1px;
+  border-radius: 13px 13px 29px 29px;
+  background: var(--glass);
+  transform-origin: top;
+  transform: scaleY(0);
+  will-change: transform;
+  animation: drink 9s infinite both;
 }
+@keyframes drink {
+  0%, 84% { transform: scaleY(0); animation-timing-function: cubic-bezier(.45, 0, .4, 1); }
+  97%, 100% { transform: scaleY(1); }
+}
+/* Ångan i demoglaset syns först när kaffet har fyllts på, och försvinner när glaset töms. */
+.demo-layer.d-caffeine .fx-over { animation: demo-steam 9s infinite both; }
+@keyframes demo-steam { 0%, 56% { opacity: 0; } 62%, 82% { opacity: 1; } 86%, 100% { opacity: 0; } }
 .demo-glass::after {
   content: "";
   position: absolute;
