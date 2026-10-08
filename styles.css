@@ -505,12 +505,22 @@ body:not(.is-empty) .backdrop-blobs span { opacity: .28; }
   border-radius: 14px 14px 30px 30px;
   background: var(--glass);
   box-shadow: 0 20px 40px -18px rgba(60,40,10,.25), inset 0 0 0 1px rgba(255,255,255,.4);
-  padding: 4px;
+  overflow: hidden;
+  animation: float 6s ease-in-out infinite;
+}
+/* Innehållet: lagren staplas nerifrån. I slutet av slingan töms glaset uppifrån
+   (som när man dricker ur det) i stället för att lagren pressas ihop. */
+.demo-fill {
+  position: absolute; inset: 4px;
   display: flex;
   flex-direction: column-reverse;
   gap: 2px;
-  overflow: hidden;
-  animation: float 6s ease-in-out infinite;
+  border-radius: 10px 10px 26px 26px;
+  animation: drain 9s infinite both;
+}
+@keyframes drain {
+  0%, 84% { clip-path: inset(0 0 0 0 round 10px 10px 26px 26px); animation-timing-function: cubic-bezier(.45, 0, .55, 1); }
+  97%, 100% { clip-path: inset(100% 0 0 0 round 10px 10px 26px 26px); }
 }
 .demo-glass::after {
   content: "";
@@ -526,10 +536,11 @@ body:not(.is-empty) .backdrop-blobs span { opacity: .28; }
 .d-alcohol { background: var(--alcohol); height: 54px; animation-name: fill-alcohol; }
 .d-caffeine { background: var(--caffeine); height: 34px; animation-name: fill-caffeine; }
 .d-sugar { background: var(--sugar); height: 26px; animation-name: fill-sugar; }
-@keyframes fill-water    { 0%, 4% { height: 0; } 16%, 88% { height: 62px; } 100% { height: 0; } }
-@keyframes fill-alcohol  { 0%, 18% { height: 0; } 30%, 88% { height: 54px; } 100% { height: 0; } }
-@keyframes fill-sugar    { 0%, 32% { height: 0; } 44%, 88% { height: 26px; } 100% { height: 0; } }
-@keyframes fill-caffeine { 0%, 46% { height: 0; } 58%, 88% { height: 34px; } 100% { height: 0; } }
+/* Lagren fylls på ett i taget och behåller sin höjd tills glaset har tömts. */
+@keyframes fill-water    { 0%, 4% { height: 0; } 16%, 100% { height: 62px; } }
+@keyframes fill-alcohol  { 0%, 18% { height: 0; } 30%, 100% { height: 54px; } }
+@keyframes fill-sugar    { 0%, 32% { height: 0; } 44%, 100% { height: 26px; } }
+@keyframes fill-caffeine { 0%, 46% { height: 0; } 58%, 100% { height: 34px; } }
 
 .bubble {
   position: absolute;
@@ -567,10 +578,11 @@ body:not(.is-empty) .backdrop-blobs span { opacity: .28; }
 .tag-caffeine i { background: var(--caffeine); }
 .tag-sugar { right: 10px; bottom: 124px; animation-name: tag-sugar; }
 .tag-sugar i { background: var(--sugar); }
-@keyframes tag-water    { 0%, 10% { opacity: 0; transform: translateY(6px) scale(.9); } 18%, 86% { opacity: 1; transform: none; } 96%, 100% { opacity: 0; } }
-@keyframes tag-alcohol  { 0%, 24% { opacity: 0; transform: translateY(6px) scale(.9); } 32%, 86% { opacity: 1; transform: none; } 96%, 100% { opacity: 0; } }
-@keyframes tag-sugar    { 0%, 38% { opacity: 0; transform: translateY(6px) scale(.9); } 46%, 86% { opacity: 1; transform: none; } 96%, 100% { opacity: 0; } }
-@keyframes tag-caffeine { 0%, 52% { opacity: 0; transform: translateY(6px) scale(.9); } 60%, 86% { opacity: 1; transform: none; } 96%, 100% { opacity: 0; } }
+/* Etiketterna tonar ut i samma ordning som glaset töms – uppifrån och ned. */
+@keyframes tag-water    { 0%, 10% { opacity: 0; transform: translateY(6px) scale(.9); } 18%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: translateY(4px); } }
+@keyframes tag-alcohol  { 0%, 24% { opacity: 0; transform: translateY(6px) scale(.9); } 32%, 89% { opacity: 1; transform: none; } 94%, 100% { opacity: 0; transform: translateY(4px); } }
+@keyframes tag-sugar    { 0%, 38% { opacity: 0; transform: translateY(6px) scale(.9); } 46%, 87% { opacity: 1; transform: none; } 92%, 100% { opacity: 0; transform: translateY(4px); } }
+@keyframes tag-caffeine { 0%, 52% { opacity: 0; transform: translateY(6px) scale(.9); } 60%, 85% { opacity: 1; transform: none; } 90%, 100% { opacity: 0; transform: translateY(4px); } }
 
 .hero-title {
   margin: 22px 0 0;
