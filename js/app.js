@@ -51,6 +51,21 @@
     let x = seed;
     return () => { x = (x * 9301 + 49297) % 233280; return x / 233280; };
   }
+  let steamId = 0;
+  function ribbon(cx, width, amp, phase) {
+    const N = 22;
+    const left = [];
+    const right = [];
+    for (let i = 0; i <= N; i++) {
+      const t = i / N; // 0 = botten, 1 = toppen
+      const y = 108 - t * 104;
+      const x = cx + amp * Math.sin(t * Math.PI * 2.2 + phase) * (0.4 + t);
+      const half = width * Math.pow(Math.sin(Math.PI * t), 1.2) * (0.6 + 0.6 * t);
+      left.push(`${(x - half).toFixed(1)} ${y.toFixed(1)}`);
+      right.push(`${(x + half).toFixed(1)} ${y.toFixed(1)}`);
+    }
+    return `M${left.join(' L')} L${right.reverse().join(' L')} Z`;
+  }
   function fxFor(id) {
     const r = seeded(id.length * 97 + id.charCodeAt(0));
     const pct = (a, b) => (a + r() * (b - a)).toFixed(1) + '%';
@@ -66,11 +81,14 @@
       for (let i = 0; i < 6; i++) inner += `<i class="fx-drop" style="--x:${pct(8, 88)};--y:${pct(6, 50)};--s:${px(5, 8)}"></i>`;
       for (let i = 0; i < 3; i++) inner += `<i class="fx-drop run" style="--x:${pct(12, 84)};--y:${pct(4, 30)};--s:${px(6, 9)};--dur:${sec(5, 8)};--t:-${sec(0, 8)}"></i>`;
     } else if (id === 'caffeine') {
-      // Ångstrimmor: slingrande banor som stiger, svajar och tonar ut.
-      const WISPS = ['M10 70 C3 58 17 46 10 34 S3 12 11 0', 'M10 70 C17 58 3 46 10 34 S17 12 9 0', 'M9 70 C15 60 4 50 9 38 S16 18 10 0'];
-      for (let i = 0; i < 3; i++) {
-        over += `<i class="fx-steam" style="--x:${pct(18 + i * 20, 26 + i * 20)};--dur:${sec(4.6, 6.2)};--t:-${sec(0, 6)}"><svg viewBox="0 0 20 70" aria-hidden="true"><path d="${WISPS[i]}"/></svg></i>`;
-      }
+      // Ånga: avsmalnande slöjor (tunna i början och slutet) som överlappar och flyter ihop.
+      const id = `steam${++steamId}`;
+      const wisps = [[24, 5.5, 4, 0], [31, 7, 5, 1.6], [38, 5, 4, 3.1]].map(([cx, w, amp, ph], i) =>
+        `<g class="wisp" style="--dur:${sec(5.2, 6.8)};--t:-${sec(0, 6)}"><path d="${ribbon(cx, w, amp, ph)}" fill="url(#${id})"/></g>`).join('');
+      over += `<svg class="fx-steam" viewBox="0 0 60 110" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="1" x2="0" y2="0">`
+        + '<stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".25" stop-color="#fff" stop-opacity=".9"/>'
+        + '<stop offset=".65" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>'
+        + `</linearGradient></defs>${wisps}</svg>`;
       inner += '<i class="fx-crema"></i>';
     } else if (id === 'sugar') {
       for (let i = 0; i < 9; i++) inner += `<i class="fx-spark" style="--x:${pct(6, 90)};--y:${pct(10, 85)};--s:${px(5, 10)};--dur:${sec(1.8, 3.2)};--t:-${sec(0, 3)}"></i>`;
