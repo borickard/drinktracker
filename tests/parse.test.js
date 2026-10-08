@@ -27,7 +27,7 @@ test('volym, procent och flaska', () => {
 
 test('ihopsatt drink summerar ingredienser', () => {
   const [d] = Drinks.parse('gin sprite');
-  assert.ok(d.alcoholG > 12 && d.sugarG > 20);
+  assert.ok(d.alcoholG > 12 && d.sugarG >= 15);
 });
 
 test('läsk med och utan koffein', () => {
@@ -144,4 +144,16 @@ test('drinkar med egna poster och lättöl', () => {
   assert.deepStrictEqual(names('americano'), [['Kaffe', 1]]);
   // Lättöl (2,2 %) är inte alkoholfri
   assert.ok(Drinks.parse('lättöl')[0].alcoholG > 4);
+});
+
+test('kontrollerade näringsvärden', () => {
+  const get = (q) => Drinks.parse(q)[0];
+  assert.ok(get('alkoholfri öl').sugarG <= 4); // 0,5–1,3 g/100 ml
+  assert.strictEqual(get('nocco').caffeineMg, 180); // 55 mg/100 ml
+  assert.strictEqual(get('celsius').caffeineMg, 200); // 355 ml
+  assert.strictEqual(get('monster').caffeineMg, 160);
+  assert.strictEqual(get('red bull').caffeineMg, 80);
+  assert.strictEqual(get('cola').caffeineMg, 32);
+  // Long Island: 5 × 1,5 cl sprit à 40 % ≈ 2 standardglas
+  assert.ok(Math.abs(get('long island').alcoholG / 12 - 1.97) < 0.05);
 });

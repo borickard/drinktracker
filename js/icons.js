@@ -67,6 +67,7 @@
     sangria: 'vin', glogg: 'vin', 'alkoholfri-glogg': 'vin', 'alkoholfritt-vin': 'vin', kir: 'bubbel', mimosa: 'bubbel', hugo: 'bubbel',
     'alkoholfritt-bubbel': 'bubbel', 'alkoholfri-cider': 'cider', mocktail: 'drink', 'espresso-tonic': 'espresso', iste: 'juice',
     mjolk: 'vatten', sportdryck: 'vatten', festis: 'juice',
+    monster: 'energi', 'monster-ultra': 'energi', nocco: 'energi', celsius: 'energi',
   };
   function iconFor(entry) {
     const ids = entry.matched || [];
